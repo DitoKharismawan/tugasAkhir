@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.tugasakhir"
-        minSdk = 19
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
+    implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

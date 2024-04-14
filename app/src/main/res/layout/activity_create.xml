@@ -205,7 +205,7 @@
         app:srcCompat="@drawable/baseline_keyboard_24" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/scanButtonBag"
         android:layout_width="32dp"
         android:layout_height="30dp"
         android:layout_marginBottom="160dp"
@@ -261,7 +261,7 @@
         app:srcCompat="@drawable/baseline_keyboard_24" />
 
     <ImageButton
-        android:id="@+id/imageButton6"
+        android:id="@+id/scanButtonConnote"
         android:layout_width="32dp"
         android:layout_height="29dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -339,7 +339,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/viewButton1"
+        android:id="@+id/buttonViewDetail"
         android:layout_width="156dp"
         android:layout_height="51dp"
         android:layout_marginBottom="4dp"
