@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -29,9 +31,17 @@ public class DetailConnoteActivity extends AppCompatActivity {
         listViewDetail.setAdapter(adapter);
 
         // Ambil hasil pemindaian dari intent
-        String scannedData = getIntent().getStringExtra("selectedItem");
-        if (scannedData != null) {
-            FirebaseDatabase.getInstance().getReference().child("awb").child(scannedData)
+        String selectedBag = getIntent().getStringExtra("selectedItem");
+        ArrayList<String> connoteContents = getIntent().getStringArrayListExtra("connoteContents");
+        Toast.makeText(this, "Mengambil " + connoteContents.size() + " connote...", Toast.LENGTH_SHORT).show();
+        for ( String connote : connoteContents ) {
+            appendBag(connote);
+        }
+    }
+
+    private void appendBag(String selectedBag) {
+        if (selectedBag != null) {
+            FirebaseDatabase.getInstance().getReference().child("awb").child(selectedBag)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -44,8 +54,6 @@ public class DetailConnoteActivity extends AppCompatActivity {
                                     // Ambil data yang diperlukan
                                     String detail = "AWB: " + dataSnapshot.getKey();
                                     if (dataMap != null) {
-                                        if (dataMap.get("awb") != null)
-                                            detail += ", AWB: " + dataMap.get("awb");
                                         if (dataMap.get("qty") != null)
                                             detail += ", Qty: " + dataMap.get("qty");
                                         if (dataMap.get("weight") != null)
@@ -61,7 +69,7 @@ public class DetailConnoteActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             } else {
                                 // Handle jika tidak ada data atau tidak ditemukan
-                                detailList.add("Data tidak ditemukan untuk AWB: " + scannedData);
+                                detailList.add("Data tidak ditemukan untuk AWB: " + selectedBag);
                                 adapter.notifyDataSetChanged();
                             }
                         }

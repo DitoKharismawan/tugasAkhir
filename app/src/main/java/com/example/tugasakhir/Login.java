@@ -46,6 +46,8 @@ public class Login extends AppCompatActivity {
                 database = FirebaseDatabase.getInstance().getReferenceFromUrl("https://tugasakhir-30385-default-rtdb.firebaseio.com/users");
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Username Atau Password Salah", Toast.LENGTH_SHORT).show();
+//                    Intent masuk = new Intent(getApplicationContext(), MainActivity.class);
+//                    startActivity(masuk);
                 } else {
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
