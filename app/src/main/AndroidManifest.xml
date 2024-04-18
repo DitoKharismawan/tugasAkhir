@@ -9,6 +9,7 @@
         android:screenOrientation="sensorPortrait"
         />
     <application
+        android:name="com.example.tugasakhir.TugasAkhirContext"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -51,6 +52,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+        <activity
+            android:name=".HandoverBagActivity"
+            android:exported="true" />
+
     </application>
 
 </manifest>

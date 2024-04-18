@@ -1,6 +1,7 @@
 package com.example.tugasakhir;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BagData {
     public String awb;
@@ -8,23 +9,17 @@ public class BagData {
     public String origin;
     public String facilityCode;
     public String timestamp;
-    public ArrayList<String> scannedResults;
-    public ArrayList<String> scansBag;
-    public ArrayList<String> scansConnote;
+    public HashMap<String, ArrayList<String>> bagCtx;
 
-    public BagData() {
-        // Default constructor diperlukan untuk Firebase Realtime Database
-    }
 
-    public BagData(String awb, String user, String origin, String facilityCode, String timestamp,
-                   ArrayList<String> scannedResults, ArrayList<String> scansBag, ArrayList<String> scansConnote) {
+
+    public BagData(String awb, String user, String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
         this.awb = awb;
         this.user = user;
         this.origin = origin;
         this.facilityCode = facilityCode;
         this.timestamp = timestamp;
-        this.scannedResults = scannedResults;
-        this.scansBag = scansBag;
-        this.scansConnote = scansConnote;
+        this.bagCtx = bagCtx;
+
     }
 }
