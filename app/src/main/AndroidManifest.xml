@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false"
-        android:screenOrientation="sensorPortrait"
-        />
+        android:screenOrientation="sensorPortrait" />
+
     <application
-        android:name="com.example.tugasakhir.TugasAkhirContext"
+        android:name=".TugasAkhirContext"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,9 +22,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TugasAkhir"
         tools:targetApi="31">
-        <activity android:name="com.journeyapps.barcodescanner.CaptureActivity"
+        <activity
+            android:name=".ViewDetailHoBag"
+            android:exported="false" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation"/>
+            tools:replace="screenOrientation" />
         <activity
             android:name=".DetailConnoteActivity"
             android:exported="false" />
@@ -55,7 +61,6 @@
         <activity
             android:name=".HandoverBagActivity"
             android:exported="true" />
-
     </application>
 
 </manifest>

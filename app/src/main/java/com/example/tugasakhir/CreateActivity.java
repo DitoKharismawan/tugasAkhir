@@ -41,7 +41,7 @@ public class CreateActivity extends AppCompatActivity {
     EditText elmEditTextBag, elmEditTextConnote;
     Button buttonCreate, buttonViewDetail,approveButton;
     private int bagCounter = 0;
-    private final String bagPrefix = "CGK/HACB/";
+    private final String bagPrefix = "CGK_HACB_";
     ImageButton scanButtonBag, scanButtonConnote;
 //    ArrayList<String> scannedResults; // ArrayList untuk menyimpan hasil scan barcode
 //    ArrayList<String> scansBag;
@@ -155,6 +155,7 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String awbKey = bagPrefix + bagCounter;
                 editTextAwbBag.setText(awbKey);
+
                 // Mendapatkan referensi database
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("bags");
 
@@ -165,8 +166,16 @@ public class CreateActivity extends AppCompatActivity {
                         editTextOrigin.getText().toString(),
                         editTextFacCode.getText().toString(),
                         editTextTanggal.getText().toString(),
-                       bagCtx.getBagsHolder()
+                        bagCtx.getBagsHolder()
                 );
+
+                // Menghitung total connote
+                int totalConnote = newBag.calculateTotalConnote();
+
+                // Menambahkan totalConnote ke data tas baru
+                newBag.setTotalConnote(totalConnote);
+
+                // Menyimpan data tas baru ke Firebase
 
                 // Menyimpan data tas ke Firebase
                 bagsRef.child(awbKey).setValue(newBag)
@@ -276,11 +285,6 @@ public class CreateActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent awb) {
         super.onActivityResult(requestCode, resultCode, awb);
-        // Tangani hasil pemindaian
-//        Toast.makeText(getApplicationContext(), "[SCID] " + requestCode + " [RESULTID] " + resultCode , Toast.LENGTH_LONG).show();
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, awb);
-        // BAG
-
         if (requestCode == 50001) {
             IntentResult result = IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, awb);
             if (result != null) {
@@ -294,16 +298,12 @@ public class CreateActivity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(getApplicationContext(), "[SCAN BAG] = " + scannedData, Toast.LENGTH_LONG).show();
-//                        scannedResults.add(scannedData);
-//                        scansBag.add(scannedData);
-//                        bagsHolder.put(scannedData, new ArrayList<>());
+
                         bagCtx.appendBag(scannedData);
                         elmIncBag.setText(bagCtx.getBagsHolder().size() + "");
                         elmEditTextBag.setText(scannedData);
 
                     }
-//                    TextView elementText = findViewById(R.id.textViewIncrementBag);
-//                    elementText.setText(scansConnote.size());
                 }
             }
         }
@@ -383,48 +383,6 @@ public class CreateActivity extends AppCompatActivity {
 
 
 
-/*
-* moveConnote by google Gemini
-* */
-//    private boolean moveConnote(String connoteId, String toBagId) {
-//        // Check if bagsHolder is initialized
-//        if (bagsHolder == null) {
-//            return false; // Return false if bagsHolder is not initialized
-//        }
-//
-//        // Flag to track if connote is found
-//        boolean connoteFound = false;
-//
-//        // Iterate through each bag in bagsHolder
-//        for (String bagName : bagsHolder.keySet()) {
-//            ArrayList<String> connoteList = bagsHolder.get(bagName);
-//
-//            // Check if connote exists in the current bag
-//            if (connoteList != null && connoteList.contains(connoteId)) {
-//                connoteFound = true;
-//
-//                // Remove the connote from the current bag
-//                connoteList.remove(connoteId);
-//                break; // Exit the loop after finding the connote
-//            }
-//        }
-//
-//        // Check if connote was found and add to destination bag if successful
-//        if (connoteFound) {
-//            // Check if the 'to' bag exists (optional)
-//            if (!bagsHolder.containsKey(toBagId)) {
-//                bagsHolder.put(toBagId, new ArrayList<String>()); // Create new bag if it doesn't exist
-//            }
-//
-//            // Get the 'to' bag (guaranteed to exist after the previous check)
-//            ArrayList<String> destinationList = bagsHolder.get(toBagId);
-//
-//            // Add the connote to the 'to' bag
-//            destinationList.add(connoteId);
-//        }
-//
-//        return connoteFound; // Return true if connote found and moved, false otherwise
-//    }
 
     private AlertDialog.Builder showConfirmDialog(String judul, String pesan) {
         return new AlertDialog.Builder(this)

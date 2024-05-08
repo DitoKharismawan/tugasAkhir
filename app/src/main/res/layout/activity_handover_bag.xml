@@ -107,7 +107,7 @@
         app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
 
     <Button
-        android:id="@+id/buttonCreate"
+        android:id="@+id/buttonCreateHoBag"
         android:layout_width="314dp"
         android:layout_height="60dp"
 
@@ -156,7 +156,7 @@
         app:layout_constraintVertical_bias="0.642" />
 
     <EditText
-        android:id="@+id/editTextBag"
+        android:id="@+id/editTextHoBag"
         android:layout_width="348dp"
         android:layout_height="54dp"
 
@@ -188,7 +188,7 @@
         app:srcCompat="@drawable/baseline_keyboard_24" />
 
     <ImageButton
-        android:id="@+id/scanButtonBag"
+        android:id="@+id/scanButtonHoBag"
         android:layout_width="32dp"
         android:layout_height="30dp"
         android:layout_marginBottom="160dp"
@@ -198,14 +198,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.895"
-        app:srcCompat="@drawable/baseline_camera_alt_24" />
+        app:srcCompat="@drawable/baseline_camera_alt_24"
+        android:onClick="onScanButtonClicked"/>
 
     <TextView
         android:id="@+id/textViewIncrementHoBag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="184dp"
-        android:layout_marginBottom="84dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginBottom="76dp"
         android:text="0"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -214,16 +215,18 @@
 
     <TextView
         android:id="@+id/textViewTotalBag"
-        android:layout_width="245dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="536dp"
+        android:layout_width="187dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="544dp"
         android:text="Total Scan BAG"
         android:textSize="25sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewIncrementHoBag"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.723"
+        app:layout_constraintHorizontal_bias="0.421"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.128" />
 
     <Button
         android:id="@+id/approveButtonHoBag"
