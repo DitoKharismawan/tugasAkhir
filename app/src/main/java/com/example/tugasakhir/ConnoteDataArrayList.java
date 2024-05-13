@@ -1,8 +1,8 @@
 package com.example.tugasakhir;
 
-class ConnoteData {
+class ConnoteDataArrayList {
     private String connoteId;
-    public ConnoteData(String connoteId) {
+    public ConnoteDataArrayList(String connoteId) {
         this.connoteId = connoteId;
 
     }

@@ -11,6 +11,8 @@ public class AdaptedArrayList {
         this.totalConnote = totalConnote;
     }
 
+
+
     public String getBagId() {
         return bagCtx;
     }

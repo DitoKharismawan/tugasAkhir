@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import java.util.Objects;
 public class Login extends AppCompatActivity {
 
     private Button btnLogin;
+
+    private ImageView imageView2;
     private EditText etUsername, etPassword;
 
     private DatabaseReference database;
@@ -33,6 +36,8 @@ public class Login extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
+        imageView2 = findViewById(R.id.imageView2);
+
 
 
 
@@ -43,7 +48,7 @@ public class Login extends AppCompatActivity {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
                 database = FirebaseDatabase.getInstance().getReference("users");
-                database = FirebaseDatabase.getInstance().getReferenceFromUrl("https://tugasakhir-30385-default-rtdb.firebaseio.com/users");
+               // database = FirebaseDatabase.getInstance().getReferenceFromUrl("https://tugasakhir-30385-default-rtdb.firebaseio.com/users");
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Username Atau Password Salah", Toast.LENGTH_SHORT).show();
 //                    Intent masuk = new Intent(getApplicationContext(), MainActivity.class);
@@ -70,6 +75,14 @@ public class Login extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(getApplicationContext(), "Image terklik", Toast.LENGTH_SHORT).show();
+                Intent rdbActivityIntent = new Intent(getApplicationContext(), RDBDebugger.class);
+                startActivity(rdbActivityIntent);
             }
         });
     }

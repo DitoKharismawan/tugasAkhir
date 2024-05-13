@@ -153,15 +153,14 @@ public class CreateActivity extends AppCompatActivity {
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String awbKey = bagPrefix + bagCounter;
-                editTextAwbBag.setText(awbKey);
-
+                String awbKey = elmEditTextBag.getText().toString();
+                String indexBag = editTextAwbBag.getText().toString();
                 // Mendapatkan referensi database
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("bags");
 
                 // Membuat objek untuk data tas baru
                 BagData newBag = new BagData(
-                        editTextAwbBag.getText().toString(),
+                        indexBag,
                         editTextUser.getText().toString(),
                         editTextOrigin.getText().toString(),
                         editTextFacCode.getText().toString(),

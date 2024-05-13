@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 public class BagData {
     // Deklarasi atribut-atribut BagData
+public String bagId;
     public String awb;
     public String user;
     public String origin;
@@ -14,8 +15,8 @@ public class BagData {
     public int totalConnote; // Menambahkan atribut totalConnote
 
     // Konstruktor untuk BagData
-    public BagData(String awb, String user, String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
-        this.awb = awb;
+    public BagData(String bagId, String user, String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
+        this.bagId = bagId;
         this.user = user;
         this.origin = origin;
         this.facilityCode = facilityCode;

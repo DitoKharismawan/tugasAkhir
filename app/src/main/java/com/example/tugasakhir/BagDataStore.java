@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BagDataStore {
+
     private HashMap<String, ArrayList<String>> bagsHolder = new HashMap<>();
     public GlobalUtils utils = new GlobalUtils();
 
