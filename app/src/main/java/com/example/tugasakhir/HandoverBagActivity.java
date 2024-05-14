@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -38,6 +41,7 @@ public class HandoverBagActivity extends AppCompatActivity {
     BagDataStore bagCtx;
     TextView elmIncBag;
     EditText editTextHoBagNo, editTextTanggalHo,editTextUserHo;
+    Spinner facilityCodeSpinner;
     private int hoBagCounter = 0;
     private final String bagPrefix = "CGK_HBAG_";
 
@@ -54,7 +58,7 @@ public class HandoverBagActivity extends AppCompatActivity {
         elmIncBag = findViewById(R.id.textViewIncrementHoBag);
         scannedResultsHoBag = new ArrayList<>();
         buttonCreateHoBag= findViewById(R.id.buttonCreateHoBag);
-
+        facilityCodeSpinner = findViewById(R.id.editTextFacCode);
         // Initialize bagCtx
         bagCtx = ((TugasAkhirContext) getApplicationContext()).getBagDataStore();
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +66,49 @@ public class HandoverBagActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent back = new Intent(HandoverBagActivity.this, MainActivity.class);
                 startActivity(back);
+            }
+        });
+        DatabaseReference facilitiesRef = FirebaseDatabase.getInstance().getReference().child("facilities");
+
+        // Create an ArrayList to hold the facility codes
+        final ArrayList<String> facilityCodes = new ArrayList<>();
+
+        facilitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    final ArrayList<String> facilityList = new ArrayList<>();
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        // Assuming each child has a key representing the facility code
+                        String facilityCode = childSnapshot.getKey();
+
+                        // Access facilityName node based on the key
+                        DataSnapshot facilityNameSnapshot = childSnapshot.child("facilityName");
+                        if (facilityNameSnapshot.exists()) {
+                            String facilityName = facilityNameSnapshot.getValue(String.class);
+                            // Concatenate facility code and name
+                            String facilityListItem = facilityCode + " : " + facilityName;
+                            facilityList.add(facilityListItem);
+                        } else {
+                            // Handle case where "facilityName" node doesn't exist
+                            // ...
+                        }
+                    }
+
+                    // Create an ArrayAdapter with the combined facility information
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(HandoverBagActivity.this, android.R.layout.simple_spinner_item, facilityList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+adapter.insert("Pilih Facility Destinasi", 0);
+                    // Set the adapter to the Spinner
+                    facilityCodeSpinner.setAdapter(adapter);
+                } else {
+                    Toast.makeText(HandoverBagActivity.this, "No facilities found in Firebase.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(HandoverBagActivity.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         scanButtonHoBag.setOnClickListener(new View.OnClickListener() {

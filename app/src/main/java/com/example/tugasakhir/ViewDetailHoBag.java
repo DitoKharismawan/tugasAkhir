@@ -86,18 +86,27 @@ public class ViewDetailHoBag extends AppCompatActivity {
         }
     }
 
-    public void deleteBagHookHBag(String bagCtx, Integer arrayIndex) {
-        // Access and modify adaptedDataList from within the Activity
-        Toast.makeText(getApplicationContext(), "[Direct] : " + bagCtx + " [By Idx] : " + adaptedDataList.get(arrayIndex).getBagId(), Toast.LENGTH_SHORT).show();
-        listAdapter.remove(adaptedDataList.get(arrayIndex));
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        // Ensure scannedResultsHoBag is not null
-        if (scannedResultsHoBag != null && scannedResultsHoBag.size() > arrayIndex) {
-            scannedResultsHoBag.remove(arrayIndex.intValue());  // Remove from scannedResultsHoBag
-        } else {
-            Log.w("ViewDetailHoBag", "Invalid arrayIndex or scannedResultsHoBag is null!");
+        if (adaptedDataList.isEmpty() && listAdapter != null) {
+            scannedResultsHoBag = null;
+            adaptedDataList.clear();
+            dataList.clear();
+            listAdapter.clear();
         }
+    }
 
-        // Update ListView adapter to reflect changes (already implemented)
+    public void deleteBagHookHBag(String bagCtx, Integer arrayIndex) {
+        Toast.makeText(getApplicationContext(), "[Direct] : " + bagCtx + " [By Idx] : " + adaptedDataList.get(arrayIndex).getBagId(), Toast.LENGTH_SHORT).show();
+        adaptedDataList.remove(arrayIndex);
+        dataList.remove(arrayIndex); // Remove corresponding item from dataList as well
+        listAdapter.remove(adaptedDataList.get(arrayIndex)); // Update adapter
+
+        // **New line to clear scannedResultsHoBag**
+        if (scannedResultsHoBag != null && !scannedResultsHoBag.isEmpty() && arrayIndex < scannedResultsHoBag.size()) {
+            scannedResultsHoBag.remove(arrayIndex.intValue());  // Use arrayIndex to remove the element
+        }
     }
 }

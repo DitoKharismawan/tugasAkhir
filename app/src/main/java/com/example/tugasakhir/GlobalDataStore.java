@@ -11,8 +11,13 @@ public class GlobalDataStore {
     public HashMap<String, ArrayList<String>> getBagsHolder() {
         return bagsHolder;
     }
-    public ArrayList<String> getScannedResults() {
+
+    public ArrayList<String> getScannedResultsHoBag() {
         return scannedResultsHoBag;
+    }
+
+    public void setScannedResultsHoBag(ArrayList<String> scannedResultsHoBag) {
+        this.scannedResultsHoBag = scannedResultsHoBag;
     }
 
     public void setScannedResults(ArrayList<String> scannedResults) {
