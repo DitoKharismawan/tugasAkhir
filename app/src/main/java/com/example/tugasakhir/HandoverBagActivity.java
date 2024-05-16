@@ -10,14 +10,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -31,13 +36,14 @@ import java.util.Locale;
 
 public class HandoverBagActivity extends AppCompatActivity {
     ImageButton scanButtonHoBag;
-    Button buttonViewDetailHoBag,buttonCreateHoBag;
+    Button buttonViewDetailHoBag, buttonCreateHoBag,approveButtonHoBag;
     ImageView backButton;
     ListView listViewScannedResultsHoBag;
     ArrayList<String> scannedResultsHoBag;
     BagDataStore bagCtx;
     TextView elmIncBag;
-    EditText editTextHoBagNo, editTextTanggalHo,editTextUserHo;
+    EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo;
+    Spinner facilityCodeSpinner;
     private int hoBagCounter = 0;
     private final String bagPrefix = "CGK_HBAG_";
 
@@ -53,8 +59,9 @@ public class HandoverBagActivity extends AppCompatActivity {
         buttonViewDetailHoBag = findViewById(R.id.buttonViewDetailHoBag); // Initialize buttonViewDetailHoBag here
         elmIncBag = findViewById(R.id.textViewIncrementHoBag);
         scannedResultsHoBag = new ArrayList<>();
-        buttonCreateHoBag= findViewById(R.id.buttonCreateHoBag);
-
+        buttonCreateHoBag = findViewById(R.id.buttonCreateHoBag);
+        facilityCodeSpinner = findViewById(R.id.editTextFacCode);
+        approveButtonHoBag =findViewById(R.id.approveButtonHoBag);
         // Initialize bagCtx
         bagCtx = ((TugasAkhirContext) getApplicationContext()).getBagDataStore();
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +69,49 @@ public class HandoverBagActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent back = new Intent(HandoverBagActivity.this, MainActivity.class);
                 startActivity(back);
+            }
+        });
+        DatabaseReference facilitiesRef = FirebaseDatabase.getInstance().getReference().child("facilities");
+
+        // Create an ArrayList to hold the facility codes
+        final ArrayList<String> facilityCodes = new ArrayList<>();
+
+        facilitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    final ArrayList<String> facilityList = new ArrayList<>();
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        // Assuming each child has a key representing the facility code
+                        String facilityCode = childSnapshot.getKey();
+
+                        // Access facilityName node based on the key
+                        DataSnapshot facilityNameSnapshot = childSnapshot.child("facilityName");
+                        if (facilityNameSnapshot.exists()) {
+                            String facilityName = facilityNameSnapshot.getValue(String.class);
+                            // Concatenate facility code and name
+                            String facilityListItem = facilityCode + " : " + facilityName;
+                            facilityList.add(facilityListItem);
+                        } else {
+                            // Handle case where "facilityName" node doesn't exist
+                            // ...
+                        }
+                    }
+
+                    // Create an ArrayAdapter with the combined facility information
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(HandoverBagActivity.this, android.R.layout.simple_spinner_item, facilityList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter.insert("Pilih Facility Destinasi", 0);
+                    // Set the adapter to the Spinner
+                    facilityCodeSpinner.setAdapter(adapter);
+                } else {
+                    Toast.makeText(HandoverBagActivity.this, "No facilities found in Firebase.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(HandoverBagActivity.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         scanButtonHoBag.setOnClickListener(new View.OnClickListener() {
@@ -76,29 +126,30 @@ public class HandoverBagActivity extends AppCompatActivity {
                 fillEditTextWithAutoIncrementAndTimestamp();
                 fetchUserData();
             }
-        private void fillEditTextWithAutoIncrementAndTimestamp () {
-            // Retrieve the saved counter value from SharedPreferences (if any)
-            int savedHoBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("hoBagCounter", 0);
 
-            // Increment the counter based on the saved value
-            int hoBagCounter = savedHoBagCounter + 1;
+            private void fillEditTextWithAutoIncrementAndTimestamp() {
+                // Retrieve the saved counter value from SharedPreferences (if any)
+                int savedHoBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("hoBagCounter", 0);
 
-            // Update the SharedPreferences with the new counter value
-            getSharedPreferences("app_data", MODE_PRIVATE)
-                    .edit()
-                    .putInt("hoBagCounter", hoBagCounter)
-                    .apply();
+                // Increment the counter based on the saved value
+                int hoBagCounter = savedHoBagCounter + 1;
+
+                // Update the SharedPreferences with the new counter value
+                getSharedPreferences("app_data", MODE_PRIVATE)
+                        .edit()
+                        .putInt("hoBagCounter", hoBagCounter)
+                        .apply();
 
 
-            editTextHoBagNo.setText(String.valueOf(bagPrefix + hoBagCounter));
+                editTextHoBagNo.setText(String.valueOf(bagPrefix + hoBagCounter));
 
-            // Mengatur tanggal dengan format timestamp
-            String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
-            editTextTanggalHo.setText(currentDate);
+                // Mengatur tanggal dengan format timestamp
+                String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+                editTextTanggalHo.setText(currentDate);
 
-            // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
-        }
-    });
+                // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
+            }
+        });
 
         // Set onClickListener untuk tombol View Detail
         buttonViewDetailHoBag.setOnClickListener(new View.OnClickListener() {
@@ -106,10 +157,55 @@ public class HandoverBagActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Buat Intent untuk memulai ButtonViewDetailActivity
                 Intent intent = new Intent(HandoverBagActivity.this, ViewDetailHoBag.class);
-                 intent.putExtra("scannedResults", scannedResultsHoBag);
+                intent.putExtra("scannedResults", scannedResultsHoBag);
                 startActivity(intent);
             }
         });
+        approveButtonHoBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String indexBag = editTextHoBagNo.getText().toString().trim();
+                String user = editTextUserHo.getText().toString().trim();
+                String facilityCode = facilityCodeSpinner.getSelectedItem().toString().trim(); // Assuming facility code is selected from spinner
+                String tanggal = editTextTanggalHo.getText().toString().trim();
+
+                // Validation (Optional)
+                if (indexBag.isEmpty() || user.isEmpty() || facilityCode.isEmpty() || tanggal.isEmpty() || scannedResultsHoBag.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please fill in all required fields and scan items", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Process scanned data (Optional)
+                // ...
+
+                // Create BagData object
+                BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal, scannedResultsHoBag);
+
+                // Firebase Database interaction
+                DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("HoBags");
+                bagsRef.child(indexBag).setValue(newBag)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Data saved successfully
+                                Toast.makeText(getApplicationContext(), "Data berhasil disimpan di Firebase", Toast.LENGTH_SHORT).show();
+                                // Clear UI elements (Optional)
+                                editTextHoBagNo.setText("");
+                                editTextUserHo.setText("");
+                                // ... clear other EditTexts and scannedResultsHoBag
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle errors
+                                Toast.makeText(getApplicationContext(), "Gagal menyimpan data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
     }
 
     private void fetchUserData() {
@@ -125,7 +221,8 @@ public class HandoverBagActivity extends AppCompatActivity {
 
                         // Stop after fetching the first user's data
                         break;
-                    }} else {
+                    }
+                } else {
                     Log.d("FirebaseData", "DataSnapshot does not exist");
                 }
             }
@@ -160,26 +257,36 @@ public class HandoverBagActivity extends AppCompatActivity {
                 if (bagCtx != null) {
                     HashMap<String, ArrayList<String>> bagsHolder = bagCtx.getBagsHolder();
                     if (bagsHolder != null) {
-                        scannedResultsHoBag.add(scannedData); // Add scanned data to ArrayList
-                        elmIncBag.setText(String.valueOf(scannedResultsHoBag.size())); // Update elmIncBag text
+                        // Create a temporary ArrayList to hold the new scan result
+                        ArrayList<String> newScannedResults = new ArrayList<>();
+                        newScannedResults.add(scannedData);
+
+                        // Add new scanned results to the existing scannedResultsHoBag
+                        if (scannedResultsHoBag == null) {
+                            scannedResultsHoBag = new ArrayList<>();
+                        }
+                        scannedResultsHoBag.addAll(newScannedResults);
+
+                        // Update elmIncBag text
+                        elmIncBag.setText(String.valueOf(scannedResultsHoBag.size()));
 
                         // Update ListView to display the latest scan results
                         if (listViewScannedResultsHoBag != null) {
                             ArrayAdapter<String> adapter = (ArrayAdapter<String>) listViewScannedResultsHoBag.getAdapter();
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
+                            } else {
+                                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scannedResultsHoBag);
+                                listViewScannedResultsHoBag.setAdapter(adapter);
                             }
                         }
 
                         // Optional: Print scannedResultsHoBag to check if data is added correctly
                         Log.d("ScannedResults", scannedResultsHoBag.toString());
                     }
-
                 }
             }
         }
     }
-    }
 
-
-
+}
