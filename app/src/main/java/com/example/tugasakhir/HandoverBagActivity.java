@@ -193,7 +193,9 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 // Clear UI elements (Optional)
                                 editTextHoBagNo.setText("");
                                 editTextUserHo.setText("");
-                                // ... clear other EditTexts and scannedResultsHoBag
+                                editTextTanggalHo.setText("");
+                                facilityCodeSpinner.setSelection(0);
+                                elmIncBag.setText("0");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
