@@ -8,26 +8,11 @@ public class GlobalDataStore {
     public ArrayList<String> rdbCurrentPath = new ArrayList<>();
     private HashMap<String, ArrayList<String>> bagsHolder = new HashMap<>();
     private ArrayList<String> scannedResultsHoBag = new ArrayList<>();
-    private ArrayList<AdaptedArrayList> adaptedDataList;
-
     public HashMap<String, ArrayList<String>> getBagsHolder() {
         return bagsHolder;
     }
-
-    public ArrayList<String> getScannedResultsHoBag() {
+    public ArrayList<String> getScannedResults() {
         return scannedResultsHoBag;
-    }
-
-    public void setScannedResultsHoBag(ArrayList<String> scannedResultsHoBag) {
-        this.scannedResultsHoBag = scannedResultsHoBag;
-    }
-
-    public ArrayList<AdaptedArrayList> getAdaptedDataList() {
-        return adaptedDataList;
-    }
-
-    public void setAdaptedDataList(ArrayList<AdaptedArrayList> adaptedDataList) {
-        this.adaptedDataList = adaptedDataList;
     }
 
     public void setScannedResults(ArrayList<String> scannedResults) {

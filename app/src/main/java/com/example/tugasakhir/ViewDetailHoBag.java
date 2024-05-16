@@ -35,12 +35,12 @@ public class ViewDetailHoBag extends AppCompatActivity {
 
         listViewScannedResultsHoBag = findViewById(R.id.listViewScannedResultsHoBag);
 
+        // Retrieve scanned results from Intent (assuming key is "scannedResults")
         scannedResultsHoBag = getIntent().getStringArrayListExtra("scannedResults");
 
         if (scannedResultsHoBag != null && !scannedResultsHoBag.isEmpty()) {
             // Initialize ArrayList to hold data from Firebase
-            dataList = new ArrayList<>();
-            adaptedDataList = new ArrayList<>();
+
 
             // Iterate through scanned results
             for (String scanResult : scannedResultsHoBag) {
@@ -56,13 +56,14 @@ public class ViewDetailHoBag extends AppCompatActivity {
                                         // Extract required information from the map
                                         Long totalConnote = (Long) bagData.get("totalConnote");
                                         Integer totalConnoteInt = totalConnote.intValue();
-                                        String bagInfo = "Bag ID: " + scanResult + " Total Connote: " + totalConnote;
+                                        String bagInfo = "Bag ID: " + scanResult + "Total Connote" + totalConnote;
                                         AdaptedArrayList adaptedElement = new AdaptedArrayList(scanResult, totalConnoteInt, totalConnoteInt);
                                         dataList.add(bagInfo);
                                         adaptedDataList.add(adaptedElement);
-                                        Log.d("App", "Creating arrayAdapter: " + adaptedDataList.size());
+                                        Log.d("App", "Creating arrayAdapter:" + adaptedDataList.size());
 
                                         // Update ListView with the new data
+//                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ViewDetailHoBag.this, android.R.layout.simple_list_item_1, dataList);
                                         ArrayAdapter<AdaptedArrayList> adapter = new CustomArrayAdapterHoBag(ViewDetailHoBag.this, adaptedDataList);
                                         listAdapter = (CustomArrayAdapterHoBag) adapter;
                                         listViewScannedResultsHoBag.setAdapter(adapter);
@@ -71,6 +72,7 @@ public class ViewDetailHoBag extends AppCompatActivity {
                                     Toast.makeText(ViewDetailHoBag.this, "No data found for scanned result: " + scanResult, Toast.LENGTH_SHORT).show();
                                 }
                             }
+
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -84,31 +86,18 @@ public class ViewDetailHoBag extends AppCompatActivity {
         }
     }
 
-
-
-
     public void deleteBagHookHBag(String bagCtx, Integer arrayIndex) {
+        // Access and modify adaptedDataList from within the Activity
         Toast.makeText(getApplicationContext(), "[Direct] : " + bagCtx + " [By Idx] : " + adaptedDataList.get(arrayIndex).getBagId(), Toast.LENGTH_SHORT).show();
+        listAdapter.remove(adaptedDataList.get(arrayIndex));
 
-        dataList.remove(arrayIndex); // Remove corresponding item from dataList as well
-        listAdapter.remove(adaptedDataList.get(arrayIndex)); // Update adapter
-
-        // **New line to clear scannedResultsHoBag**
-        if (scannedResultsHoBag != null && !scannedResultsHoBag.isEmpty() && arrayIndex < scannedResultsHoBag.size()) {
-            scannedResultsHoBag.remove(arrayIndex.intValue());  // Use arrayIndex to remove the element
+        // Ensure scannedResultsHoBag is not null
+        if (scannedResultsHoBag != null && scannedResultsHoBag.size() > arrayIndex) {
+            scannedResultsHoBag.remove(arrayIndex.intValue());  // Remove from scannedResultsHoBag
+        } else {
+            Log.w("ViewDetailHoBag", "Invalid arrayIndex or scannedResultsHoBag is null!");
         }
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        Log.d("App", "onResume: scannedResultsHoBag size before clear: " + (scannedResultsHoBag != null ? scannedResultsHoBag.size() : 0));
-        if (adaptedDataList.isEmpty() && listAdapter != null) {
-            scannedResultsHoBag = null;
-            adaptedDataList.clear();
-            dataList.clear();
-            listAdapter.clear();
-        }
-        Log.d("App", "onResume: scannedResultsHoBag size after clear: " + (scannedResultsHoBag != null ? scannedResultsHoBag.size() : 0));
+        // Update ListView adapter to reflect changes (already implemented)
     }
 }
