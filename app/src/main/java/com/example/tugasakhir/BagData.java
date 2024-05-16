@@ -24,6 +24,8 @@ public String bagId;
         this.bagCtx = bagCtx;
     }
 
+
+
     // Method untuk menghitung total connote
     public int calculateTotalConnote() {
         int totalConnote = 0;
