@@ -192,19 +192,6 @@
         app:layout_constraintVertical_bias="0.257" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
-        android:layout_width="38dp"
-        android:layout_height="20dp"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.765"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.699"
-        app:srcCompat="@drawable/baseline_keyboard_24" />
-
-    <ImageButton
         android:id="@+id/scanButtonBag"
         android:layout_width="32dp"
         android:layout_height="30dp"
@@ -247,18 +234,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.924" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="40dp"
-        android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.778"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.823"
-        app:srcCompat="@drawable/baseline_keyboard_24" />
 
     <ImageButton
         android:id="@+id/scanButtonConnote"

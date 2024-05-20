@@ -39,7 +39,7 @@ public class HandoverBagActivity extends AppCompatActivity {
     Button buttonViewDetailHoBag, buttonCreateHoBag,approveButtonHoBag;
     ImageView backButton;
     ListView listViewScannedResultsHoBag;
-    ArrayList<String> scannedResultsHoBag;
+    ArrayList<String> gScannedResultsHoBag;
     BagDataStore bagCtx;
     TextView elmIncBag;
     EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo;
@@ -58,7 +58,7 @@ public class HandoverBagActivity extends AppCompatActivity {
         scanButtonHoBag = findViewById(R.id.scanButtonHoBag);
         buttonViewDetailHoBag = findViewById(R.id.buttonViewDetailHoBag); // Initialize buttonViewDetailHoBag here
         elmIncBag = findViewById(R.id.textViewIncrementHoBag);
-        scannedResultsHoBag = new ArrayList<>();
+        gScannedResultsHoBag = new ArrayList<>();
         buttonCreateHoBag = findViewById(R.id.buttonCreateHoBag);
         facilityCodeSpinner = findViewById(R.id.editTextFacCode);
         approveButtonHoBag =findViewById(R.id.approveButtonHoBag);
@@ -157,21 +157,21 @@ public class HandoverBagActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Buat Intent untuk memulai ButtonViewDetailActivity
                 Intent intent = new Intent(HandoverBagActivity.this, ViewDetailHoBag.class);
-                intent.putExtra("scannedResults", scannedResultsHoBag);
+                intent.putExtra("scannedResults", gScannedResultsHoBag);
                 startActivity(intent);
             }
         });
         approveButtonHoBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ArrayList<String> gScannedResultsHoBag = ((TugasAkhirContext) getApplicationContext()).getGlobalData().getScannedResults();
                 String indexBag = editTextHoBagNo.getText().toString().trim();
                 String user = editTextUserHo.getText().toString().trim();
                 String facilityCode = facilityCodeSpinner.getSelectedItem().toString().trim(); // Assuming facility code is selected from spinner
                 String tanggal = editTextTanggalHo.getText().toString().trim();
 
                 // Validation (Optional)
-                if (indexBag.isEmpty() || user.isEmpty() || facilityCode.isEmpty() || tanggal.isEmpty() || scannedResultsHoBag.isEmpty()) {
+                if (indexBag.isEmpty() || user.isEmpty() || facilityCode.isEmpty() || tanggal.isEmpty() || gScannedResultsHoBag.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please fill in all required fields and scan items", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -180,7 +180,7 @@ public class HandoverBagActivity extends AppCompatActivity {
                 // ...
 
                 // Create BagData object
-                BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal, scannedResultsHoBag);
+                BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal, gScannedResultsHoBag);
 
                 // Firebase Database interaction
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("HoBags");
@@ -193,9 +193,10 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 // Clear UI elements (Optional)
                                 editTextHoBagNo.setText("");
                                 editTextUserHo.setText("");
-                                editTextTanggalHo.setText("");
-                                facilityCodeSpinner.setSelection(0);
-                                elmIncBag.setText("0");
+                             editTextTanggalHo.setText("");
+                                facilityCodeSpinner.setSelection(0); // Reset facility code spinner to first item (index 0)
+                               ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults(); // Clear scanned results
+                                elmIncBag.setText("0"); // Set elmIncBag to empty string
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -208,6 +209,13 @@ public class HandoverBagActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ArrayList<String> gScannedResultsHoBag = ((TugasAkhirContext) getApplicationContext()).getGlobalData().getScannedResults();
+        elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
 
     private void fetchUserData() {
@@ -255,7 +263,7 @@ public class HandoverBagActivity extends AppCompatActivity {
             IntentResult result = IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, bags);
             if (result != null && result.getContents() != null) {
                 String scannedData = result.getContents();
-
+                ArrayList<String> gScannedResultsHoBag = ((TugasAkhirContext) getApplicationContext()).getGlobalData().getScannedResults();
                 if (bagCtx != null) {
                     HashMap<String, ArrayList<String>> bagsHolder = bagCtx.getBagsHolder();
                     if (bagsHolder != null) {
@@ -264,13 +272,13 @@ public class HandoverBagActivity extends AppCompatActivity {
                         newScannedResults.add(scannedData);
 
                         // Add new scanned results to the existing scannedResultsHoBag
-                        if (scannedResultsHoBag == null) {
-                            scannedResultsHoBag = new ArrayList<>();
+                        if (gScannedResultsHoBag == null) {
+                            gScannedResultsHoBag = new ArrayList<>();
                         }
-                        scannedResultsHoBag.addAll(newScannedResults);
+                        gScannedResultsHoBag.addAll(newScannedResults);
 
                         // Update elmIncBag text
-                        elmIncBag.setText(String.valueOf(scannedResultsHoBag.size()));
+                        elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
 
                         // Update ListView to display the latest scan results
                         if (listViewScannedResultsHoBag != null) {
@@ -278,13 +286,13 @@ public class HandoverBagActivity extends AppCompatActivity {
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                             } else {
-                                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scannedResultsHoBag);
+                                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, gScannedResultsHoBag);
                                 listViewScannedResultsHoBag.setAdapter(adapter);
                             }
                         }
 
                         // Optional: Print scannedResultsHoBag to check if data is added correctly
-                        Log.d("ScannedResults", scannedResultsHoBag.toString());
+                        Log.d("ScannedResults", gScannedResultsHoBag.toString());
                     }
                 }
             }

@@ -7,17 +7,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".HandoverBagActivity"
+    tools:context=".RevisiDestinasiBag"
     tools:layout_editor_absoluteX="-13dp"
     tools:layout_editor_absoluteY="0dp">
 
+
     <TextView
-        android:id="@+id/textViewHBag"
+        android:id="@+id/textViewRevisiBag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="44dp"
         android:gravity="center"
-        android:text="Handover BAG"
+        android:text="Revisi Destinasi BAG"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,14 +27,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextHoBagNo"
+        android:id="@+id/editTextRevisiBagNo"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="92dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
-        android:hint="Handover Bag Number"
+        android:hint="Revisi Bag Number"
         android:inputType="none"
         app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,10 +45,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTanggalHo"
+        android:id="@+id/editTextTanggalRevisi"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="140dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
@@ -62,10 +63,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextUserHo"
+        android:id="@+id/editTextUserRevisi"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="188dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
@@ -73,17 +74,17 @@
         android:inputType="none"
         app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/editTextFacCode"
+        android:id="@+id/editTextRevisiFacCode"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="216dp"
+        android:layout_marginTop="560dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
@@ -97,19 +98,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
     <ImageView
         android:id="@+id/backButton"
         android:layout_width="28dp"
         android:layout_height="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
 
     <Button
-        android:id="@+id/buttonCreateHoBag"
+        android:id="@+id/buttonCreateRevisiBag"
         android:layout_width="314dp"
         android:layout_height="60dp"
 
@@ -120,10 +120,10 @@
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.417"
+        app:layout_constraintVertical_bias="0.336"
         tools:ignore="TextSizeCheck" />
 
     <EditText
@@ -139,31 +139,30 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.544" />
+        app:layout_constraintVertical_bias="0.624" />
 
     <TextView
         android:id="@+id/textViewBN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BAG NUMBER"
+        android:text="Search By BAG NUMBER"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
+        app:layout_constraintVertical_bias="0.434" />
 
     <EditText
-        android:id="@+id/editTextHoBag"
+        android:id="@+id/editTextRevisiBag"
         android:layout_width="348dp"
         android:layout_height="54dp"
 
-        android:layout_marginTop="416dp"
-
+        android:layout_marginBottom="380dp"
         android:layout_x="6dp"
         android:layout_y="499dp"
         android:ems="10"
@@ -171,40 +170,34 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.193"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.257" />
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/scanButtonHoBag"
+        android:id="@+id/scanButtonRevisiBag"
         android:layout_width="32dp"
         android:layout_height="30dp"
         android:layout_marginBottom="160dp"
+        android:onClick="onScanButtonClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.893"
+        app:layout_constraintHorizontal_bias="0.904"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.895"
-        app:srcCompat="@drawable/baseline_camera_alt_24"
-        android:onClick="onScanButtonClicked"/>
+        app:layout_constraintVertical_bias="0.626"
+        app:srcCompat="@drawable/baseline_camera_alt_24" />
 
     <TextView
-        android:id="@+id/textViewIncrementHoBag"
+        android:id="@+id/textViewIncrementTotalBag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginBottom="68dp"
+        android:layout_marginEnd="108dp"
+        android:layout_marginBottom="116dp"
         android:text="0"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textViewTotalBag"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextHoBag"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="@+id/textViewTotalBag" />
 
     <TextView
         android:id="@+id/textViewTotalBag"
@@ -214,16 +207,17 @@
         android:text="Total Scan BAG"
         android:textSize="27sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewIncrementHoBag"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewIncrementTotalBag"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.559"
+        app:layout_constraintHorizontal_bias="0.587"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/approveButtonHoBag"
-        android:layout_width="156dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="4dp"
+        android:id="@+id/approveButtonRevisiBag"
+        android:layout_width="171dp"
+        android:layout_height="53dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginBottom="60dp"
         android:layout_x="222dp"
         android:layout_y="653dp"
         android:text="Approve"
@@ -231,19 +225,5 @@
         app:backgroundTint="#4CAF50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonViewDetailHoBag"
-        android:layout_width="156dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="4dp"
-        android:layout_x="26dp"
-        android:layout_y="651dp"
-        android:text="View Detail"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/approveButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

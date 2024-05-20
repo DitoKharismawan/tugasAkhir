@@ -32,12 +32,12 @@ public class CustomArrayAdapterHoBag extends ArrayAdapter<AdaptedArrayList> {
         AdaptedArrayList adaptedArrayElement = getItem(position);
 
         TextView bagIdTextView = convertView.findViewById(R.id.bag_id_text_view);
-        TextView connoteCountTextView = convertView.findViewById(R.id.connote_count_text_view);
+        //TextView connoteCountTextView = convertView.findViewById(R.id.connote_count_text_view);
         TextView totalConnoteTextView = convertView.findViewById(R.id.total_connote_text_view);
         Button btnDelete = convertView.findViewById(R.id.detail_view_btn_delete);
 
-        bagIdTextView.setText("Bag ID: " + adaptedArrayElement.getBagId());
-        connoteCountTextView.setText("Connote Count: " + adaptedArrayElement.getConnoteCount());
+        bagIdTextView.setText("Bag No: " + adaptedArrayElement.getBagId());
+        //connoteCountTextView.setText("Connote Count: " + adaptedArrayElement.getConnoteCount());
         totalConnoteTextView.setText("Total Connote: " + adaptedArrayElement.getTotalConnote());
 
         btnDelete.setOnClickListener(new View.OnClickListener() {

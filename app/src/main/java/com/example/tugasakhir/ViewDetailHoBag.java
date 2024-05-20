@@ -26,6 +26,7 @@ public class ViewDetailHoBag extends AppCompatActivity {
     CustomArrayAdapterHoBag listAdapter;
     ArrayList<String> dataList = new ArrayList<>();
     ArrayList<AdaptedArrayList> adaptedDataList = new ArrayList<>();
+    ArrayList<String> gScannedResultsHoBag;
 
 
     @Override
@@ -34,16 +35,17 @@ public class ViewDetailHoBag extends AppCompatActivity {
         setContentView(R.layout.activity_view_detail_ho_bag);
 
         listViewScannedResultsHoBag = findViewById(R.id.listViewScannedResultsHoBag);
-
+        taCtx = (TugasAkhirContext) getApplicationContext();
         // Retrieve scanned results from Intent (assuming key is "scannedResults")
-        scannedResultsHoBag = getIntent().getStringArrayListExtra("scannedResults");
+//        scannedResultsHoBag = getIntent().getStringArrayListExtra("scannedResults");
+        gScannedResultsHoBag = taCtx.getGlobalData().getScannedResults();
 
-        if (scannedResultsHoBag != null && !scannedResultsHoBag.isEmpty()) {
+        if (gScannedResultsHoBag!= null && !gScannedResultsHoBag.isEmpty()) {
             // Initialize ArrayList to hold data from Firebase
 
 
             // Iterate through scanned results
-            for (String scanResult : scannedResultsHoBag) {
+            for (String scanResult : gScannedResultsHoBag) {
                 // Get reference to "bagCtx" node in Firebase and find the bag with matching scanResult
                 FirebaseDatabase.getInstance().getReference().child("bags").child(scanResult)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -92,11 +94,11 @@ public class ViewDetailHoBag extends AppCompatActivity {
         listAdapter.remove(adaptedDataList.get(arrayIndex));
 
         // Ensure scannedResultsHoBag is not null
-        if (scannedResultsHoBag != null && scannedResultsHoBag.size() > arrayIndex) {
-            scannedResultsHoBag.remove(arrayIndex.intValue());  // Remove from scannedResultsHoBag
-        } else {
-            Log.w("ViewDetailHoBag", "Invalid arrayIndex or scannedResultsHoBag is null!");
-        }
+//        if (scannedResultsHoBag != null && scannedResultsHoBag.size() > arrayIndex) {
+            gScannedResultsHoBag.remove(arrayIndex.intValue());  // Remove from scannedResultsHoBag
+//        } else {
+//            Log.w("ViewDetailHoBag", "Invalid arrayIndex or scannedResultsHoBag is null!");
+//        }
 
         // Update ListView adapter to reflect changes (already implemented)
     }

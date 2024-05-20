@@ -23,6 +23,12 @@
         android:theme="@style/Theme.TugasAkhir"
         tools:targetApi="31">
         <activity
+            android:name=".RevisiDestinasiBag"
+            android:exported="false" />
+        <activity
+            android:name=".ReceivingBagActivity"
+            android:exported="false" />
+        <activity
             android:name=".RDBDebugger"
             android:exported="false"
             android:label="@string/title_activity_rdbdebugger"
@@ -66,8 +72,9 @@
         <activity
             android:name=".HandoverBagActivity"
             android:exported="true" />
-        <activity android:name=".logOutActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".logOutActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

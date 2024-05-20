@@ -7,17 +7,89 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".HandoverBagActivity"
+    tools:context=".ReceivingBagActivity"
     tools:layout_editor_absoluteX="-13dp"
     tools:layout_editor_absoluteY="0dp">
 
     <TextView
-        android:id="@+id/textViewHBag"
+        android:id="@+id/textViewScanBag"
+        android:layout_width="102dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="656dp"
+        android:text="Scan Bag"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.949"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonDetailScanBag"
+        android:layout_width="156dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginBottom="56dp"
+        android:layout_x="26dp"
+        android:layout_y="651dp"
+        android:text="View Detail"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/approveButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewIncrementScanBag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="68dp"
+        android:layout_marginBottom="104dp"
+        android:text="0"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextSearchBag"
+        android:layout_width="366dp"
+        android:layout_height="56dp"
+
+        android:layout_marginBottom="424dp"
+        android:layout_x="6dp"
+        android:layout_y="499dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextScanRcvBag"
+        android:layout_width="366dp"
+        android:layout_height="56dp"
+
+        android:layout_marginBottom="200dp"
+        android:layout_x="6dp"
+        android:layout_y="499dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.339"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewRBag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:gravity="center"
-        android:text="Handover BAG"
+        android:text="Receiving BAG"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,14 +98,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextHoBagNo"
+        android:id="@+id/editTextRcvBagNo"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
-        android:hint="Handover Bag Number"
+        android:hint="Receiving Bag Number"
         android:inputType="none"
         app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,10 +116,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTanggalHo"
+        android:id="@+id/editTextTanggalRcv"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="128dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
@@ -62,32 +134,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextUserHo"
+        android:id="@+id/editTextUserRcv"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="176dp"
         android:background="@drawable/edit_text_background"
         android:enabled="false"
         android:gravity="center"
         android:hint="User"
-        android:inputType="none"
-        app:layout_constraintBaseline_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/editTextFacCode"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_marginTop="216dp"
-        android:background="@drawable/edit_text_background"
-        android:enabled="false"
-        android:gravity="center"
-        android:hint="Facility Code"
         android:inputType="none"
         app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,21 +151,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <EditText
+        android:id="@+id/editTextRemarksRcv"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:layout_marginTop="432dp"
+        android:background="@drawable/edit_text_background"
+        android:enabled="false"
+        android:gravity="center"
+        android:hint="Remarks"
+        android:inputType="none"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/backButton"
         android:layout_width="28dp"
         android:layout_height="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
 
     <Button
-        android:id="@+id/buttonCreateHoBag"
-        android:layout_width="314dp"
-        android:layout_height="60dp"
+        android:id="@+id/buttonCreateRcvBag"
+        android:layout_width="157dp"
+        android:layout_height="52dp"
 
         android:layout_x="26dp"
         android:layout_y="201dp"
@@ -120,29 +190,24 @@
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.417"
+        app:layout_constraintVertical_bias="0.308"
         tools:ignore="TextSizeCheck" />
 
-    <EditText
-        android:id="@+id/editTextRemarks"
-        android:layout_width="354dp"
-        android:layout_height="36dp"
-        android:layout_x="16dp"
-        android:layout_y="239dp"
-
-        android:ems="10"
-        android:hint="Remarks"
-        android:inputType="text"
+    <TextView
+        android:id="@+id/textViewSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search By BAG NUMBER"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.544" />
+        app:layout_constraintVertical_bias="0.38" />
 
     <TextView
         android:id="@+id/textViewBN"
@@ -152,91 +217,60 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintHorizontal_bias="0.055"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
-
-    <EditText
-        android:id="@+id/editTextHoBag"
-        android:layout_width="348dp"
-        android:layout_height="54dp"
-
-        android:layout_marginTop="416dp"
-
-        android:layout_x="6dp"
-        android:layout_y="499dp"
-        android:ems="10"
-        android:inputType="text"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.193"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.257" />
+        app:layout_constraintVertical_bias="0.656" />
 
     <ImageButton
-        android:id="@+id/scanButtonHoBag"
+        android:id="@+id/scanButtonSearchBag"
         android:layout_width="32dp"
         android:layout_height="30dp"
         android:layout_marginBottom="160dp"
+        android:onClick="onScanButtonClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.893"
+        app:layout_constraintHorizontal_bias="0.883"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.895"
-        app:srcCompat="@drawable/baseline_camera_alt_24"
-        android:onClick="onScanButtonClicked"/>
+        app:layout_constraintVertical_bias="0.553"
+        app:srcCompat="@drawable/baseline_camera_alt_24" />
 
-    <TextView
-        android:id="@+id/textViewIncrementHoBag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginBottom="68dp"
-        android:text="0"
-        android:textSize="28sp"
-        android:textStyle="bold"
+    <ImageButton
+        android:id="@+id/scanButtonRcvBag"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="160dp"
+        android:onClick="onScanButtonClicked"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textViewTotalBag"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextHoBag"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/textViewTotalBag"
-        android:layout_width="202dp"
-        android:layout_height="37dp"
-        android:layout_marginBottom="36dp"
-        android:text="Total Scan BAG"
-        android:textSize="27sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewIncrementHoBag"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.559"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.883"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.913"
+        app:srcCompat="@drawable/baseline_camera_alt_24" />
 
     <Button
-        android:id="@+id/approveButtonHoBag"
-        android:layout_width="156dp"
+        android:id="@+id/approveButtonRcvBag"
+        android:layout_width="157dp"
         android:layout_height="51dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
         android:layout_x="222dp"
         android:layout_y="653dp"
         android:text="Approve"
         android:textSize="15sp"
         app:backgroundTint="#4CAF50"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.308" />
 
     <Button
-        android:id="@+id/buttonViewDetailHoBag"
+        android:id="@+id/buttonDetailOutBag"
         android:layout_width="156dp"
         android:layout_height="51dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="56dp"
         android:layout_x="26dp"
         android:layout_y="651dp"
         android:text="View Detail"
@@ -244,6 +278,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/approveButton"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewOutstanding"
+        android:layout_width="121dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="656dp"
+        android:text="Outstanding"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewIncrementOutBag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginBottom="104dp"
+        android:text="0"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
