@@ -1,5 +1,7 @@
 package com.example.tugasakhir;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,13 +107,13 @@ public class HandoverBagActivity extends AppCompatActivity {
                     // Set the adapter to the Spinner
                     facilityCodeSpinner.setAdapter(adapter);
                 } else {
-                    Toast.makeText(HandoverBagActivity.this, "No facilities found in Firebase.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HandoverBagActivity.this, "No facilities found in Firebase.", LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(HandoverBagActivity.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HandoverBagActivity.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), LENGTH_SHORT).show();
             }
         });
         scanButtonHoBag.setOnClickListener(new View.OnClickListener() {
@@ -183,31 +185,66 @@ public class HandoverBagActivity extends AppCompatActivity {
                 BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal, gScannedResultsHoBag);
 
                 // Firebase Database interaction
-                DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("HoBags");
-                bagsRef.child(indexBag).setValue(newBag)
+                DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference();
+
+                // Create a reference for the specific bag under HoBags
+                DatabaseReference bagRef = bagsRef.child("HoBags").child(indexBag);
+
+                // Save data to HoBags node directly
+                bagRef.setValue(newBag)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                // Data saved successfully
-                                Toast.makeText(getApplicationContext(), "Data berhasil disimpan di Firebase", Toast.LENGTH_SHORT).show();
+                                // Data saved successfully in HoBags
+                                // ...
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle errors saving to HoBags
+                                Toast.makeText(getApplicationContext(), "Gagal menyimpan data di HoBags: " + e.getMessage(), LENGTH_SHORT).show();
+                            }
+                        });
+
+                // Prepare data for individual scan results under bagsToHo (modify as needed)
+                HashMap<String, Object> bagsToHoData = new HashMap<>();
+                for (String scannedItem : gScannedResultsHoBag) {
+                    HashMap<String, String> scanResultData = new HashMap<>();
+                    scanResultData.put("HoId", indexBag);  // Add HoId for each scan result
+                    bagsToHoData.put(scannedItem, scanResultData);  // Use scanned item as child node key
+                }
+
+                // Create a separate reference for bagsToHo at the top level
+                DatabaseReference bagsToHoRef = bagsRef.child("bagsToHo");
+
+                // Save data to bagsToHo node with individual child nodes
+                bagsToHoRef.setValue(bagsToHoData)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Data saved successfully in bagsToHo
+                                Toast.makeText(getApplicationContext(), "Data berhasil disimpan di Firebase", LENGTH_SHORT).show();
                                 // Clear UI elements (Optional)
                                 editTextHoBagNo.setText("");
                                 editTextUserHo.setText("");
-                             editTextTanggalHo.setText("");
+                                editTextTanggalHo.setText("");
                                 facilityCodeSpinner.setSelection(0); // Reset facility code spinner to first item (index 0)
-                               ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults(); // Clear scanned results
+                                ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults(); // Clear scanned results
                                 elmIncBag.setText("0"); // Set elmIncBag to empty string
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Handle errors
-                                Toast.makeText(getApplicationContext(), "Gagal menyimpan data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                // Handle errors saving to bagsToHo
+                                Toast.makeText(getApplicationContext(), "Gagal menyimpan data di bagsToHo: " + e.getMessage(), LENGTH_SHORT).show();
                             }
                         });
             }
         });
+
+
 
     }
 

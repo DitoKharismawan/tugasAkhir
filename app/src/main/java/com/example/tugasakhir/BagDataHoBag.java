@@ -18,4 +18,7 @@ public class BagDataHoBag {
         this.timestamp=timestamp;
         this.gScannedResultsHoBag=gScannedResultsHoBag;
     }
+    public ArrayList<String> getgScannedResultsHoBag() {
+        return gScannedResultsHoBag;
+    }
 }
