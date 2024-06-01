@@ -219,7 +219,7 @@ public class HandoverBagActivity extends AppCompatActivity {
                 DatabaseReference bagsToHoRef = bagsRef.child("bagsToHo");
 
                 // Save data to bagsToHo node with individual child nodes
-                bagsToHoRef.setValue(bagsToHoData)
+                bagsToHoRef.updateChildren(bagsToHoData)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
