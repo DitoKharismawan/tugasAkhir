@@ -46,10 +46,13 @@ public class ReceivingBagActivity extends AppCompatActivity {
 
         scanButtonSearchBag = findViewById(R.id.scanButtonSearchBag);
         buttonDetailOutBag = findViewById(R.id.buttonDetailOutBag);
-        elmIncBag = findViewById(R.id.textViewIncrementOutBag);
+        elmIncBag = findViewById(R.id.textViewIncrementOutBag); // Fix the typo (double dot)
 
-        // Initialize empty array list to store scanned results
-        gScannedResultsHoBag = new ArrayList<>();
+                // Initialize empty array list to store scanned results
+                gScannedResultsHoBag = new ArrayList<>();
+
+        // Update elmIncBag text to reflect the initial size of the array
+        updateScannedResultCount();
 
         buttonDetailOutBag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +73,11 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 startBarcodeScanner();
             }
         });
+    }
+
+    private void updateScannedResultCount() {
+        // Update the text view to display the current number of scanned results
+        elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
 
     private void startBarcodeScanner() {
@@ -95,6 +103,8 @@ public class ReceivingBagActivity extends AppCompatActivity {
                     // Add the scanned barcode to the array list
                     gScannedResultsHoBag.add(scanResult.getContents());
                     Log.d("Scanned Result", scanResult.getContents());
+                    // Update elmIncBag to reflect the new number of scanned results
+                    updateScannedResultCount();
                     // Firebase Realtime Database reference
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("gScannedResultsHoBag");
 
