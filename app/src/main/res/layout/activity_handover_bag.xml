@@ -188,7 +188,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.895"
         app:srcCompat="@drawable/baseline_camera_alt_24"
-        android:onClick="onScanButtonClicked"/>
+        android:onClick="onScanButtonClicked"
+        android:background="?android:attr/selectableItemBackgroundBorderless"/>
 
     <TextView
         android:id="@+id/textViewIncrementHoBag"

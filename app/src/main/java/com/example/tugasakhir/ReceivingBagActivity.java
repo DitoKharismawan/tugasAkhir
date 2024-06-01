@@ -6,20 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,7 +26,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ReceivingBagActivity extends AppCompatActivity {
     ImageButton scanButtonSearchBag,scanButtonRcvBag;
@@ -39,7 +33,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
     TextView elmIncBag;
     private Intent data;
     ListView listViewScannedResultsOutBag;
-    Button buttonDetailOutBag;
+    Button buttonDetailOutBag,buttonDetailScanBag;
     ArrayList<String> gScannedResultsHoBag;
     int totalItems = 0;
     @Override
@@ -50,7 +44,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
         scanButtonSearchBag = findViewById(R.id.scanButtonSearchBag);
         buttonDetailOutBag = findViewById(R.id.buttonDetailOutBag);
         elmIncBag = findViewById(R.id.textViewIncrementOutBag); // Fix the typo (double dot)
-
+        buttonDetailScanBag=findViewById(R.id.buttonDetailScanBag);
                 // Initialize empty array list to store scanned results
         gScannedResultsHoBag = new ArrayList<>();
 
@@ -65,6 +59,18 @@ public class ReceivingBagActivity extends AppCompatActivity {
 
                 // Create an Intent to start DetailOutstandingActivity
                 Intent intent = new Intent(ReceivingBagActivity.this, DetailOutstandingActivity.class);
+                intent.putExtra("scannedResults", gScannedResultsHoBag);
+                startActivity(intent);
+            }
+        });
+        buttonDetailScanBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check if there are scanned results before starting the DetailOutstandingActivity
+
+
+                // Create an Intent to start DetailOutstandingActivity
+                Intent intent = new Intent(ReceivingBagActivity.this, DetailScanBagActivity.class);
                 intent.putExtra("scannedResults", gScannedResultsHoBag);
                 startActivity(intent);
             }
@@ -181,6 +187,31 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 }
             }
         }
+        else if (requestCode == 50005) {
+            // Handle scan results from "Search Bag" functionality (requestCode 50005)
+            if (resultCode == RESULT_OK) {
+                // Assuming data contains information about scanned results (modify as needed)
+                String scannedResultsString = data.getStringExtra("scannedResults");
+                if (scannedResultsString != null) {
+                    // Update UI elements based on the received scanned results
+                    // Here, we're assuming scanned results are comma-separated values
+                    String[] scannedResultsArray = scannedResultsString.split(",");
+                   // gScannedResultsHoBag.clear(); // Clear existing scanned results
+                    for (String scannedResult : scannedResultsArray) {
+                        gScannedResultsHoBag.add(scannedResult.trim());
+                    }
+                    updateScannedResultCount(); // Update the text view to reflect the new count
+                    // You can further update other UI elements as needed (e.g., ListView)
+                } else {
+                    // Handle scenario where no scanned results are received
+                    Toast.makeText(this, "No scanned results received from Search Bag", LENGTH_SHORT).show();
+                }
+            } else {
+                // Handle other result codes (e.g., cancellation)
+                Toast.makeText(this, "Search Bag operation cancelled", LENGTH_SHORT).show();
+            }
+        }
     }
 
-}
+    }
+

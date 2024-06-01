@@ -4,6 +4,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -44,7 +45,7 @@ public class HandoverBagActivity extends AppCompatActivity {
     ArrayList<String> gScannedResultsHoBag;
     BagDataStore bagCtx;
     TextView elmIncBag;
-    EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo;
+    EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo,editTextHoBag;
     Spinner facilityCodeSpinner;
     private int hoBagCounter = 0;
     private final String bagPrefix = "CGK_HBAG_";
@@ -64,6 +65,7 @@ public class HandoverBagActivity extends AppCompatActivity {
         buttonCreateHoBag = findViewById(R.id.buttonCreateHoBag);
         facilityCodeSpinner = findViewById(R.id.editTextFacCode);
         approveButtonHoBag =findViewById(R.id.approveButtonHoBag);
+        editTextHoBag=findViewById(R.id.editTextHoBag);
         // Initialize bagCtx
         bagCtx = ((TugasAkhirContext) getApplicationContext()).getBagDataStore();
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -327,7 +329,19 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 listViewScannedResultsHoBag.setAdapter(adapter);
                             }
                         }
-
+                        // Update editTextHoBag with scanned data and clear after 2 seconds
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                editTextHoBag.setText(scannedData);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        editTextHoBag.setText("");
+                                    }
+                                }, 2000); // Delay for 2 seconds
+                            }
+                        });
                         // Optional: Print scannedResultsHoBag to check if data is added correctly
                         Log.d("ScannedResults", gScannedResultsHoBag.toString());
                     }
