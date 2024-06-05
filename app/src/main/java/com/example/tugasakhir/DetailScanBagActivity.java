@@ -24,7 +24,7 @@ public class DetailScanBagActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_scan_bag);
 
         // Get the scanned results ArrayList from the Intent extra
-        ArrayList<String> scannedResults = getIntent().getStringArrayListExtra("scannedResultsBag");
+        ArrayList<String> scannedResults = getIntent().getStringArrayListExtra("scannedResults");
 
         // Check if scanned results are available
         if (scannedResults != null && !scannedResults.isEmpty()) {

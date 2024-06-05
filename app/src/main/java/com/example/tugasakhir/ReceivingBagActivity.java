@@ -26,16 +26,20 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReceivingBagActivity extends AppCompatActivity {
-    ImageButton scanButtonSearchBag,scanButtonRcvBag;
+    ImageButton scanButtonSearchBag, scanButtonRcvBag;
     BagDataStore bagCtx;
-    TextView elmIncBag;
-    private Intent data;
-    ListView listViewScannedResultsOutBag;
-    Button buttonDetailOutBag,buttonDetailScanBag;
-    ArrayList<String> gScannedResultsHoBag;
+    TextView elmIncBag,elmIncRcvBag;
+
+    Button buttonDetailOutBag, buttonDetailScanBag;
+    private static ArrayList<String> gScannedResultsHoBag = new ArrayList<>();
+    private static ArrayList<String> scannedResultsRcvBag = new ArrayList<>();
     int totalItems = 0;
+    private int totalScannedItems;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +48,9 @@ public class ReceivingBagActivity extends AppCompatActivity {
         scanButtonSearchBag = findViewById(R.id.scanButtonSearchBag);
         buttonDetailOutBag = findViewById(R.id.buttonDetailOutBag);
         elmIncBag = findViewById(R.id.textViewIncrementOutBag); // Fix the typo (double dot)
-        buttonDetailScanBag=findViewById(R.id.buttonDetailScanBag);
-                // Initialize empty array list to store scanned results
+        elmIncRcvBag=findViewById(R.id.textViewIncrementScanBag);
+        buttonDetailScanBag = findViewById(R.id.buttonDetailScanBag);
+        // Initialize empty array list to store scanned results
         gScannedResultsHoBag = new ArrayList<>();
 
         // Update elmIncBag text to reflect the initial size of the array
@@ -71,7 +76,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
 
                 // Create an Intent to start DetailOutstandingActivity
                 Intent intent = new Intent(ReceivingBagActivity.this, DetailScanBagActivity.class);
-                intent.putExtra("scannedResults", gScannedResultsHoBag);
+                intent.putExtra("scannedResults",scannedResultsRcvBag);
                 startActivity(intent);
             }
         });
@@ -87,18 +92,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 startBarcodeScanner();
             }
         });
-    }
-
-    private void startBarcodeScannerRcvBag() {
-
-        // Inisialisasi IntentIntegrator
-        IntentIntegrator integrator = new IntentIntegrator(ReceivingBagActivity.this);
-        integrator.setRequestCode(50005);
-        // Konfigurasi untuk IntentIntegrator
-        integrator.setPrompt("Scan a barcode");
-        integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
-        integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
-        integrator.initiateScan(); // Memulai pemindaian
     }
 
     private void updateScannedResultCount() {
@@ -117,6 +110,18 @@ public class ReceivingBagActivity extends AppCompatActivity {
         integrator.initiateScan(); // Memulai pemindaian
     }
 
+    private void startBarcodeScannerRcvBag() {
+
+        // Inisialisasi IntentIntegrator
+        IntentIntegrator integrator = new IntentIntegrator(ReceivingBagActivity.this);
+        integrator.setRequestCode(50005);
+        // Konfigurasi untuk IntentIntegrator
+        integrator.setPrompt("Scan a barcode");
+        integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
+        integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
+        integrator.initiateScan(); // Memulai pemindaian
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -127,7 +132,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
             if (scanResult != null) {
                 if (scanResult.getContents() != null) {
                     // Add the scanned barcode to the array list (optional)
-                   // gScannedResultsHoBag.add(scanResult.getContents());
+                    // gScannedResultsHoBag.add(scanResult.getContents());
                     Log.d("Scanned Result", scanResult.getContents());
 
                     // Firebase Realtime Database reference
@@ -148,14 +153,15 @@ public class ReceivingBagActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
-                                             // Loop through all child nodes under "bagsToHo" with the matching HoId
+                                            // Loop through all child nodes under "bagsToHo" with the matching HoId
                                             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                                                 // Extract bag index (assuming childSnapshot.getKey() is the bag index)
                                                 String bagIndex = childSnapshot.getKey();
                                                 totalItems++;
                                                 // Add bag index or other relevant data to an ArrayList
                                                 gScannedResultsHoBag.add(bagIndex);
-                                            } elmIncBag.setText(String.valueOf(totalItems));
+                                            }
+                                            elmIncBag.setText(String.valueOf(totalItems));
                                         } else {
                                             // No data found with the matching HoId
                                             // Handle this scenario as needed (e.g., display a message to the user)
@@ -186,32 +192,42 @@ public class ReceivingBagActivity extends AppCompatActivity {
                     Toast.makeText(this, "Scan canceled", LENGTH_SHORT).show();
                 }
             }
-        }
-        else if (requestCode == 50005) {
-            // Handle scan results from "Search Bag" functionality (requestCode 50005)
-            if (resultCode == RESULT_OK) {
-                // Assuming data contains information about scanned results (modify as needed)
-                String scannedResultsString = data.getStringExtra("scannedResults");
-                if (scannedResultsString != null) {
-                    // Update UI elements based on the received scanned results
-                    // Here, we're assuming scanned results are comma-separated values
-                    String[] scannedResultsArray = scannedResultsString.split(",");
-                   // gScannedResultsHoBag.clear(); // Clear existing scanned results
-                    for (String scannedResult : scannedResultsArray) {
-                        gScannedResultsHoBag.add(scannedResult.trim());
+        } else if (requestCode == 50005) {
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(resultCode, data);
+            if (scanResult != null) {
+                if (scanResult.getContents() != null) {
+                    String scannedData = scanResult.getContents();
+
+                    // Add scanned data to detail scan results list
+                    scannedResultsRcvBag.add(scannedData);
+                    Log.d("Scanned Result (Detail)", scannedData);
+                    int detailScanCount = scannedResultsRcvBag.size();
+                    elmIncRcvBag.setText(String.valueOf(detailScanCount));
+                    // Check if the scanned data exists in the main scan results (gScannedResultsHoBag)
+                    int indexToRemove = -1;
+                    for (int i = 0; i < gScannedResultsHoBag.size(); i++) {
+                        if (gScannedResultsHoBag.get(i).equals(scannedData)) {
+                            indexToRemove = i;
+                            break;
+                        }
                     }
-                    updateScannedResultCount(); // Update the text view to reflect the new count
-                    // You can further update other UI elements as needed (e.g., ListView)
+
+                    // Remove the matching data from the main scan results if found
+                    if (indexToRemove != -1) {
+                        gScannedResultsHoBag.remove(indexToRemove);
+                        totalItems--; // Update total scan count (optional)
+                        elmIncBag.setText(String.valueOf(totalItems)); // Update UI (optional)
+                        Log.d("Scanned Result (Detail)", "Matching data removed from main scan results");
+                    }
+
+                    // You can add further processing here if needed for detail scan results
+                    // ... (your additional logic for handling detail scan data)
                 } else {
-                    // Handle scenario where no scanned results are received
-                    Toast.makeText(this, "No scanned results received from Search Bag", LENGTH_SHORT).show();
+                    // Handle scan cancellation
+                    Toast.makeText(this, "Scan canceled", LENGTH_SHORT).show();
                 }
-            } else {
-                // Handle other result codes (e.g., cancellation)
-                Toast.makeText(this, "Search Bag operation cancelled", LENGTH_SHORT).show();
             }
         }
     }
-
-    }
+}
 
