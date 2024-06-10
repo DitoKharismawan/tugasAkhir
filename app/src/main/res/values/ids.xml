@@ -2,4 +2,5 @@
 <resources>
     <item name="handOverBag" type="id" />
     <item name="ListViewScannedResultsHoBag" type="id" />
+    <item name="yourTableLayoutId" type="id" />
 </resources>

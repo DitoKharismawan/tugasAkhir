@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
-    CardView createBag, handOverBag, receivingBag,revisiDestBag;
+    CardView createBag, handOverBag, receivingBag,revisiDestBag,report;
     TextView textViewUser, textViewOrigin;
 
     @Override
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         handOverBag = findViewById(R.id.handOverBag);
         receivingBag = findViewById(R.id.receivingBag);
         revisiDestBag = findViewById(R.id.revisiDestBag);
+        report=findViewById(R.id.report);
         fetchUserDataMain();
 
         createBag.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent create = new Intent(MainActivity.this, RevisiDestinasiBag.class);
+                startActivity(create);
+            }
+        });
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent create = new Intent(MainActivity.this, ReportActivity.class);
                 startActivity(create);
             }
         });

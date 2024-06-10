@@ -45,7 +45,7 @@ public class HandoverBagActivity extends AppCompatActivity {
     ArrayList<String> gScannedResultsHoBag;
     BagDataStore bagCtx;
     TextView elmIncBag;
-    EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo,editTextHoBag;
+    EditText editTextHoBagNo, editTextTanggalHo, editTextUserHo,editTextHoBag,editTextRemarks;
     Spinner facilityCodeSpinner;
     private int hoBagCounter = 0;
     private final String bagPrefix = "CGK_HBAG_";
@@ -66,6 +66,7 @@ public class HandoverBagActivity extends AppCompatActivity {
         facilityCodeSpinner = findViewById(R.id.editTextFacCode);
         approveButtonHoBag =findViewById(R.id.approveButtonHoBag);
         editTextHoBag=findViewById(R.id.editTextHoBag);
+        editTextRemarks=findViewById(R.id.editTextRemarks);
         // Initialize bagCtx
         bagCtx = ((TugasAkhirContext) getApplicationContext()).getBagDataStore();
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +174,7 @@ public class HandoverBagActivity extends AppCompatActivity {
                 String user = editTextUserHo.getText().toString().trim();
                 String facilityCode = facilityCodeSpinner.getSelectedItem().toString().trim(); // Assuming facility code is selected from spinner
                 String tanggal = editTextTanggalHo.getText().toString().trim();
+                String remarks = editTextRemarks.getText().toString().trim();
 
                 // Validation (Optional)
                 if (indexBag.isEmpty() || user.isEmpty() || facilityCode.isEmpty() || tanggal.isEmpty() || gScannedResultsHoBag.isEmpty()) {
@@ -184,7 +186,7 @@ public class HandoverBagActivity extends AppCompatActivity {
                 // ...
 
                 // Create BagData object
-                BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal, gScannedResultsHoBag);
+                BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal,remarks, gScannedResultsHoBag);
 
                 // Firebase Database interaction
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference();
@@ -231,6 +233,7 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 editTextHoBagNo.setText("");
                                 editTextUserHo.setText("");
                                 editTextTanggalHo.setText("");
+                                editTextRemarks.setText("");
                                 facilityCodeSpinner.setSelection(0); // Reset facility code spinner to first item (index 0)
                                 ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults(); // Clear scanned results
                                 elmIncBag.setText("0"); // Set elmIncBag to empty string

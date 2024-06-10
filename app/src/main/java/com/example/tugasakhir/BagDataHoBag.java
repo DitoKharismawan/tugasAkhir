@@ -9,13 +9,15 @@ public class BagDataHoBag {
     public ArrayList<String> gScannedResultsHoBag;
     public String indexBag;
     public String user;
+    public String remarks;
 
 
-    public BagDataHoBag(String indexBag, String user, String facilityCode, String timestamp, ArrayList<String> gScannedResultsHoBag) {
+    public BagDataHoBag(String indexBag, String user, String facilityCode, String timestamp,String remarks, ArrayList<String> gScannedResultsHoBag) {
         this.indexBag =indexBag;
         this.user =user;
         this.facilityCode=facilityCode;
         this.timestamp=timestamp;
+        this. remarks=remarks;
         this.gScannedResultsHoBag=gScannedResultsHoBag;
     }
     public ArrayList<String> getgScannedResultsHoBag() {

@@ -23,6 +23,12 @@
         android:theme="@style/Theme.TugasAkhir"
         tools:targetApi="31">
         <activity
+            android:name=".ReportHACB"
+            android:exported="false" />
+        <activity
+            android:name=".ReportActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetailScanBagActivity"
             android:exported="false" />
         <activity
