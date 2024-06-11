@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -21,6 +23,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,8 +34,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class RevisiDestinasiBag extends AppCompatActivity {
     ImageButton scanButtonRevisiBag;
@@ -41,6 +48,10 @@ public class RevisiDestinasiBag extends AppCompatActivity {
     private int totalItems;
     private static ArrayList<String> gScannedResultsHoBag = new ArrayList<>();
     TextView elmIncBag;
+    Button buttonCreateRevisiBag,approveButtonRevisiBag;
+    private final String bagPrefix = "CGK_RBAG_";
+    private String hoId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +63,195 @@ public class RevisiDestinasiBag extends AppCompatActivity {
         editTextUserRevisi=findViewById(R.id.editTextUserRevisi);
         scanButtonRevisiBag=findViewById(R.id.scanButtonRevisiBag);
         elmIncBag = findViewById(R.id.textViewIncrementTotalBag);
+        buttonCreateRevisiBag = findViewById(R.id.buttonCreateRevisiBag);
+        approveButtonRevisiBag =findViewById(R.id.approveButtonRevisiBag);
+        RevisiFacCode = findViewById(R.id.RevisiFacCode);
         scanButtonRevisiBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startBarcodeScannerRevisiBag();
+            }
+        });
+        buttonCreateRevisiBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fillEditTextWithAutoIncrementAndTimestamp();
+                fetchUserData();
+            }
+            private void fillEditTextWithAutoIncrementAndTimestamp() {
+                // Retrieve the saved counter value from SharedPreferences (if any)
+                int savedRevisiBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("revisiBagCounter", 0);
+
+                // Increment the counter based on the saved value
+                int revisiBagCounter = savedRevisiBagCounter + 1;
+
+                // Update the SharedPreferences with the new counter value
+                getSharedPreferences("app_data", MODE_PRIVATE)
+                        .edit()
+                        .putInt("revisiBagCounter", revisiBagCounter)
+                        .apply();
+
+
+                editTextRevisiBagNo.setText(String.valueOf(bagPrefix + revisiBagCounter));
+
+                // Mengatur tanggal dengan format timestamp
+                String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+                editTextTanggalRevisi.setText(currentDate);
+
+                // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
+            }
+        });
+        DatabaseReference facilitiesRef = FirebaseDatabase.getInstance().getReference().child("facilities");
+
+        // Create an ArrayList to hold the facility codes
+        final ArrayList<String> facilityCodes = new ArrayList<>();
+
+        facilitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    final ArrayList<String> facilityList = new ArrayList<>();
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        // Assuming each child has a key representing the facility code
+                        String facilityCode = childSnapshot.getKey();
+
+                        // Access facilityName node based on the key
+                        DataSnapshot facilityNameSnapshot = childSnapshot.child("facilityName");
+                        if (facilityNameSnapshot.exists()) {
+                            String facilityName = facilityNameSnapshot.getValue(String.class);
+                            // Concatenate facility code and name
+                            String facilityListItem = facilityCode + " : " + facilityName;
+                            facilityList.add(facilityListItem);
+                        } else {
+                            // Handle case where "facilityName" node doesn't exist
+                            // ...
+                        }
+                    }
+
+                    // Create an ArrayAdapter with the combined facility information
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(RevisiDestinasiBag.this, android.R.layout.simple_spinner_item, facilityList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter.insert("Pilih Facility Destinasi", 0);
+                    // Set the adapter to the Spinner
+                    RevisiFacCode.setAdapter(adapter);
+                } else {
+                    Toast.makeText(RevisiDestinasiBag.this, "No facilities found in Firebase.", LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(RevisiDestinasiBag.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), LENGTH_SHORT).show();
+            }
+        });
+        approveButtonRevisiBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Validation (Optional)
+                if (editTextRevisiBagNo.getText().toString().isEmpty() ||
+                        editTextUserRevisi.getText().toString().isEmpty() ||
+                        RevisiFacCode.getSelectedItem().toString().trim().isEmpty() ||
+                        editTextTanggalRevisi.getText().toString().isEmpty() ||
+                        gScannedResultsHoBag.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please fill in all required fields and scan items", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Prepare BagData object
+                BagDataRevisiBag newBag = new BagDataRevisiBag(
+
+                        editTextRevisiBagNo.getText().toString().trim(),
+                        editTextUserRevisi.getText().toString().trim(),
+                        editTextTanggalRevisi.getText().toString().trim(),
+                        RevisiFacCode.getSelectedItem().toString().trim(),  // Assuming facility code is selected from spinner
+                        gScannedResultsHoBag
+                );
+
+                // Firebase Database interaction
+                DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference();
+
+                // Create a reference for the specific bag under RevisiBags (modify node name as needed)
+                DatabaseReference bagRef = bagsRef.child("RevisiBags").child(editTextRevisiBagNo.getText().toString().trim());
+
+                // Save data to RevisiBags node directly
+                bagRef.setValue(newBag)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Data saved successfully in RevisiBags
+                                Toast.makeText(getApplicationContext(), "Data berhasil diapprove", Toast.LENGTH_SHORT).show();
+                                updateFacilityCodeInHoBags(hoId, RevisiFacCode.getSelectedItem().toString().trim());
+                                gScannedResultsHoBag.clear();
+                                editTextRevisiBagNo.setText("");
+                                editTextTanggalRevisi.setText("");
+                                editTextUserRevisi.setText("");
+                                RevisiFacCode.setSelection(0);
+                                elmIncBag.setText("0");
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle errors saving to RevisiBags
+                                Toast.makeText(getApplicationContext(), "Gagal menyimpan data di RevisiBags: " + e.getMessage(), LENGTH_SHORT).show();
+                            }
+                        });
+
+                // Additional actions after approval (Optional)
+                // - Update status of scanned items in bagsToHo (if applicable)
+                // - Clear UI elements
+
+
+            }
+        });
+    }
+
+    private void updateFacilityCodeInHoBags(String hoId, String newFacilityCode) {
+        DatabaseReference hoBagsRef = FirebaseDatabase.getInstance().getReference("HoBags");
+
+        // Create a query to find all bags with the matching HoId
+        Query query = hoBagsRef.orderByChild("HoId").equalTo(hoId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        String bagIndex = childSnapshot.getKey();
+                        hoBagsRef.child(bagIndex).child("facilityCode").setValue(newFacilityCode);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle query cancellation errors
+            }
+        });
+    }
+
+    private void fetchUserData() {
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Assuming you want to fetch the data of the first user found
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        // Assuming 'username' and 'origin' are child nodes under each user
+                        String username = userSnapshot.child("username").getValue(String.class);
+                        editTextUserRevisi.setText(username != null ? username : "User");
+
+                        // Stop after fetching the first user's data
+                        break;
+                    }
+                } else {
+                    Log.d("FirebaseData", "DataSnapshot does not exist");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
     }

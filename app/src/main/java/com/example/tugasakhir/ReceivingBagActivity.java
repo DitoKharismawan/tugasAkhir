@@ -212,9 +212,14 @@ public class ReceivingBagActivity extends AppCompatActivity {
         editTextScanRcvBag.setText("");
         elmIncRcvBag.setText("0");
         elmIncBag.setText("0");
+        ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults();
         // ... (clear other relevant UI elements if needed)
     }
 
+    private void updateScannedResultCount() {
+        // Update the text view to display the current number of scanned results
+        elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
+    }
     private void fetchUserData() {
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -239,10 +244,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
-    }
-    private void updateScannedResultCount() {
-        // Update the text view to display the current number of scanned results
-        elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
 
     private void startBarcodeScanner() {
