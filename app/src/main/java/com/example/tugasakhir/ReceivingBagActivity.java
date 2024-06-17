@@ -49,6 +49,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
     private int totalScannedItems;
     private int rcvBagCounter = 0;
     private final String bagPrefix = "CGK_RCVB_";
+    private String remarks;
 
 
     @Override
@@ -177,6 +178,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 bagKey,  // Use bagKey here
                 editTextUserRcv.getText().toString(),
                 editTextTanggalRcv.getText().toString(),
+                editTextRemarksRcv.getText().toString(),
                 scannedResultsRcvBag
         );
 
@@ -210,6 +212,7 @@ public class ReceivingBagActivity extends AppCompatActivity {
         editTextRemarksRcv.setText("");
         editTextSearchBag.setText("");
         editTextScanRcvBag.setText("");
+        editTextRemarksRcv.setText("");
         elmIncRcvBag.setText("0");
         elmIncBag.setText("0");
         ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults();
@@ -306,7 +309,33 @@ public class ReceivingBagActivity extends AppCompatActivity {
                                                 // Extract bag index (assuming childSnapshot.getKey() is the bag index)
                                                 String bagIndex = childSnapshot.getKey();
                                                 totalItems++;
-                                                // Add bag index or other relevant data to an ArrayList
+                                                // Check if "remarks" node exists and retrieve its value
+
+                                                // Construct the path to the "remarks" node within "HoBags" using HoId
+                                                String remarksPath = "HoBags/" + hoId + "/remarks";
+
+                                                // Reference the specific "remarks" node
+                                                DatabaseReference remarksReference = FirebaseDatabase.getInstance().getReference(remarksPath);
+
+                                                // Listen for a single value event to retrieve the remarks
+                                                remarksReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot remarksSnapshot) {
+                                                        if (remarksSnapshot.exists()) {
+                                                            remarks = remarksSnapshot.getValue(String.class);
+                                                        }
+
+                                                        // Update editTextRemarksRcv with the retrieved remarks
+                                                        editTextRemarksRcv.setText(remarks);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
+                                                // Add bag index or other relevant data to ArrayList
                                                 gScannedResultsHoBag.add(bagIndex);
                                             }
                                             elmIncBag.setText(String.valueOf(totalItems));
