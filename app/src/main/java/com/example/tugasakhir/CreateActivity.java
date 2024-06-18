@@ -36,7 +36,7 @@ import androidx.activity.OnBackPressedCallback;
 
 public class CreateActivity extends AppCompatActivity {
     ImageView backButton;
-    EditText editTextAwbBag, editTextTanggal, editTextUser, editTextOrigin, editTextFacCode;
+    EditText editTextAwbBag, editTextTanggal, editTextUser, editTextOrigin, editTextFacCode,editTextRemarks;
     TextView elmIncConnote, elmIncBag;
     EditText elmEditTextBag, elmEditTextConnote;
     Button buttonCreate, buttonViewDetail,approveButton;
@@ -61,6 +61,7 @@ public class CreateActivity extends AppCompatActivity {
         editTextUser = findViewById(R.id.editTextUser);
         editTextOrigin = findViewById(R.id.editTextOrigin);
         editTextFacCode = findViewById(R.id.editTextFacCode);
+        editTextRemarks = findViewById(R.id.editTextRemarks);
         buttonCreate = findViewById(R.id.buttonCreate);
         backButton = findViewById(R.id.backButton);
         scanButtonBag = findViewById(R.id.scanButtonBag);
@@ -163,6 +164,7 @@ public class CreateActivity extends AppCompatActivity {
                         indexBag,
                         editTextUser.getText().toString(),
                         editTextOrigin.getText().toString(),
+                        editTextRemarks.getText().toString(),
                         editTextFacCode.getText().toString(),
                         editTextTanggal.getText().toString(),
                         bagCtx.getBagsHolder()
@@ -199,6 +201,7 @@ public class CreateActivity extends AppCompatActivity {
                 editTextFacCode.setText("");
                 editTextTanggal.setText("");
                 elmEditTextBag.setText("");
+                editTextRemarks.setText("");
                 elmEditTextConnote.setText("");
                 elmIncBag.setText("0");
                 elmIncConnote.setText("0");

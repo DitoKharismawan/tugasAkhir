@@ -84,11 +84,7 @@ public class ReportHACB extends AppCompatActivity {
             }
 
         });
-        if (checkPermission()) {
-            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
+
         printPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,38 +254,6 @@ public class ReportHACB extends AppCompatActivity {
     }
 
 
-    private boolean checkPermission() {
-        // checking of permissions.
-        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        // requesting permissions if not provided.
-        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-
-                // after requesting permissions we are showing 
-                // users a toast message of permission granted.
-                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if (writeStorage && readStorage) {
-                    Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        }
-    }
     public void showDatePicker() {
         // Use DatePickerDialog instead of DatePickerFragment
         DatePickerDialog datePicker = new DatePickerDialog(this);

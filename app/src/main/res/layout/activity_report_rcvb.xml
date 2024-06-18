@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ReportHACB"
+    tools:context=".ReportRCVB"
     tools:layout_editor_absoluteX="-13dp"
     tools:layout_editor_absoluteY="0dp">
 
@@ -21,12 +21,12 @@
         app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
 
     <TextView
-        android:id="@+id/textViewReportHACB"
+        android:id="@+id/textViewReportRCVB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:gravity="center"
-        android:text="Report Handover Create AWB to BAG"
+        android:text="Report Receiving BAG"
         android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,7 @@
         app:layout_constraintVertical_bias="0.284" />
 
     <EditText
-        android:id="@+id/editTextDate"
+        android:id="@+id/editTextDateRCVB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -73,7 +73,7 @@
         app:layout_constraintVertical_bias="0.364" />
 
     <ImageView
-        android:id="@+id/printPdf"
+        android:id="@+id/printPdfRCVB"
         android:layout_width="92dp"
         android:layout_height="103dp"
         app:layout_constraintBottom_toBottomOf="parent"

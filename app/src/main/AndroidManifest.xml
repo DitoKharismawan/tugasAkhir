@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tugasakhir"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.tugasakhir" >
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -23,16 +24,24 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.TugasAkhir"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".ReportRCVB"
+            android:exported="false" />
+        <activity
+            android:name=".ReportHBAG"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.tugasakhir.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
             android:name=".ReportHACB"
             android:exported="false" />
@@ -74,7 +83,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".PortraitCaptureActivity"
-            android:screenOrientation="portrait"> <!-- Mengunci orientasi ke portrait -->
+            android:screenOrientation="portrait" > <!-- Mengunci orientasi ke portrait -->
         </activity>
         <activity
             android:name=".ButtonViewDetailActivity"
@@ -86,7 +95,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashScreenActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

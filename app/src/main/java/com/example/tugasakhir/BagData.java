@@ -10,15 +10,17 @@ public String bagId;
     public String user;
     public String origin;
     public String facilityCode;
+    public String remarks;
     public String timestamp;
     public HashMap<String, ArrayList<String>> bagCtx;
     public int totalConnote; // Menambahkan atribut totalConnote
 
     // Konstruktor untuk BagData
-    public BagData(String bagId, String user, String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
+    public BagData(String bagId, String user, String remarks,String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
         this.bagId = bagId;
         this.user = user;
         this.origin = origin;
+        this.remarks = remarks;
         this.facilityCode = facilityCode;
         this.timestamp = timestamp;
         this.bagCtx = bagCtx;

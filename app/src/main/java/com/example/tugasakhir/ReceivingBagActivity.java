@@ -212,7 +212,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
         editTextRemarksRcv.setText("");
         editTextSearchBag.setText("");
         editTextScanRcvBag.setText("");
-        editTextRemarksRcv.setText("");
         elmIncRcvBag.setText("0");
         elmIncBag.setText("0");
         ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults();
