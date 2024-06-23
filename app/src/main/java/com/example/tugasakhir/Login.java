@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +62,14 @@ public class Login extends AppCompatActivity {
                             if (snapshot.child(username).exists()) {
                                 if (snapshot.child(username).child("password").getValue(String.class).equals(password)){
                                     Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
+                                    String userId = snapshot.child(username).getKey();
+                                    String userOrigin = snapshot.child(username).child("origin").getValue(String.class);
+                                    String userFCode = snapshot.child(username).child("fCode").getValue(String.class);
+                                    TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+                                    app.setUserId(userId);
+                                    app.setUsername(username);
+                                    app.setOrigin(userOrigin);
+                                    app.setFCode(userFCode);
                                     Intent masuk = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(masuk);
                                 }

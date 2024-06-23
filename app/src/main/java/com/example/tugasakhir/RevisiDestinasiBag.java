@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import java.util.Locale;
 
 public class RevisiDestinasiBag extends AppCompatActivity {
     ImageButton scanButtonRevisiBag;
+    ImageView backButton;
     EditText editTextRevisiBagNo,editTextTanggalRevisi,editTextUserRevisi;
     Spinner RevisiFacCode;
     EditText editTextRevisiBag;
@@ -58,6 +60,7 @@ public class RevisiDestinasiBag extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_revisi_destinasi_bag);
         editTextRevisiBag = findViewById(R.id.editTextRevisiBag);
+        backButton = findViewById(R.id.backButton);
         editTextRevisiBagNo=findViewById(R.id.editTextRevisiBagNo);
         editTextTanggalRevisi=findViewById(R.id.editTextTanggalRevisi);
         editTextUserRevisi=findViewById(R.id.editTextUserRevisi);
@@ -66,6 +69,13 @@ public class RevisiDestinasiBag extends AppCompatActivity {
         buttonCreateRevisiBag = findViewById(R.id.buttonCreateRevisiBag);
         approveButtonRevisiBag =findViewById(R.id.approveButtonRevisiBag);
         RevisiFacCode = findViewById(R.id.RevisiFacCode);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent back = new Intent(RevisiDestinasiBag.this, MainActivity.class);
+                startActivity(back);
+            }
+        });
         scanButtonRevisiBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,14 +241,16 @@ public class RevisiDestinasiBag extends AppCompatActivity {
     }
 
     private void fetchUserData() {
+        TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+        String username = app.getUsername();
+
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        // Assuming 'username' and 'origin' are child nodes under each user
-                        String username = userSnapshot.child("username").getValue(String.class);
+                        // Assuming 'username' and 'origin' are child nodes under each userz
                         editTextUserRevisi.setText(username != null ? username : "User");
 
                         // Stop after fetching the first user's data

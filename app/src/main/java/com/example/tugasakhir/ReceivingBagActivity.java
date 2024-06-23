@@ -223,6 +223,8 @@ public class ReceivingBagActivity extends AppCompatActivity {
         elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
     private void fetchUserData() {
+        TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+        String username = app.getUsername();
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -230,7 +232,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
                     // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         // Assuming 'username' and 'origin' are child nodes under each user
-                        String username = userSnapshot.child("username").getValue(String.class);
                         editTextUserRcv.setText(username != null ? username : "User");
 
                         // Stop after fetching the first user's data

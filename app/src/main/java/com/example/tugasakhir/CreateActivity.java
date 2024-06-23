@@ -163,8 +163,8 @@ public class CreateActivity extends AppCompatActivity {
                 BagData newBag = new BagData(
                         indexBag,
                         editTextUser.getText().toString(),
-                        editTextOrigin.getText().toString(),
                         editTextRemarks.getText().toString(),
+                        editTextOrigin.getText().toString(),
                         editTextFacCode.getText().toString(),
                         editTextTanggal.getText().toString(),
                         bagCtx.getBagsHolder()
@@ -255,6 +255,10 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     private void fetchUserData() {
+        TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+        String username = app.getUsername();
+        String origin = app.getOrigin();
+        String fCode = app.getFCode();
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -262,9 +266,6 @@ public class CreateActivity extends AppCompatActivity {
                     // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         // Assuming 'username' and 'origin' are child nodes under each user
-                        String username = userSnapshot.child("username").getValue(String.class);
-                        String origin = userSnapshot.child("origin").getValue(String.class);
-                        String fCode = userSnapshot.child("fCode").getValue(String.class);
                         editTextUser.setText(username != null ? username : "User");
                         editTextOrigin.setText(origin != null ? origin : "Origin");
                         editTextFacCode.setText(fCode != null ? fCode : "Facility Code");

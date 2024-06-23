@@ -261,14 +261,14 @@ public class HandoverBagActivity extends AppCompatActivity {
     }
 
     private void fetchUserData() {
+        TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+        String username = app.getUsername();
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        // Assuming 'username' and 'origin' are child nodes under each user
-                        String username = userSnapshot.child("username").getValue(String.class);
                         editTextUserHo.setText(username != null ? username : "User");
 
                         // Stop after fetching the first user's data

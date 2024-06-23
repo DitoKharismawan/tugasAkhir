@@ -19,8 +19,8 @@ public String bagId;
     public BagData(String bagId, String user, String remarks,String origin, String facilityCode, String timestamp, HashMap<String, ArrayList<String>> bagCtx) {
         this.bagId = bagId;
         this.user = user;
-        this.origin = origin;
         this.remarks = remarks;
+        this.origin = origin;
         this.facilityCode = facilityCode;
         this.timestamp = timestamp;
         this.bagCtx = bagCtx;

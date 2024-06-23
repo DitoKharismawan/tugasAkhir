@@ -58,7 +58,7 @@ public class ReportHACB extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
     private ImageButton imageButtonCalendar;
     private EditText editTextDate;  // Declare EditText for date
-    ImageView printPdf;
+    ImageView printPdf,backButton;;
     private ViewGroup tableLayout;
 
     private FirebaseDatabase database;
@@ -73,10 +73,16 @@ public class ReportHACB extends AppCompatActivity {
         imageButtonCalendar = findViewById(R.id.imageButtonCalendar);
         editTextDate = findViewById(R.id.editTextDate);  // Find the EditText
         printPdf = findViewById(R.id.printPdf);
-
+        backButton = findViewById(R.id.backButton);
         // Initialize Firebase database
         database = FirebaseDatabase.getInstance();
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent back = new Intent(ReportHACB.this, ReportActivity.class);
+                startActivity(back);
+            }
+        });
         imageButtonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

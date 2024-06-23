@@ -50,7 +50,7 @@ public class ReportRCVB extends AppCompatActivity {
 
     private ImageButton imageButtonCalendar;
     private EditText editTextDateRCVB;
-    private ImageView printPdfRCVB;
+    private ImageView printPdfRCVB,backButton;
     private FirebaseDatabase database;
 
     @Override
@@ -62,10 +62,16 @@ public class ReportRCVB extends AppCompatActivity {
         imageButtonCalendar = findViewById(R.id.imageButtonCalendar);
         editTextDateRCVB = findViewById(R.id.editTextDateRCVB);
         printPdfRCVB = findViewById(R.id.printPdfRCVB);
-
+        backButton = findViewById(R.id.backButton);
         // Initialize Firebase database
         database = FirebaseDatabase.getInstance();
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent back = new Intent(ReportRCVB.this, ReportActivity.class);
+                startActivity(back);
+            }
+        });
         imageButtonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

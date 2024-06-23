@@ -51,7 +51,7 @@ public class ReportHBAG extends AppCompatActivity {
 
     private ImageButton imageButtonCalendar;
     private EditText editTextDateHBAG;
-    private ImageView printPdfHBAG;
+    private ImageView printPdfHBAG,backButton;
     private FirebaseDatabase database;
 
     @Override
@@ -63,10 +63,16 @@ public class ReportHBAG extends AppCompatActivity {
         imageButtonCalendar = findViewById(R.id.imageButtonCalendar);
         editTextDateHBAG = findViewById(R.id.editTextDateHBAG);
         printPdfHBAG = findViewById(R.id.printPdfHBAG);
-
+        backButton = findViewById(R.id.backButton);
         // Initialize Firebase database
         database = FirebaseDatabase.getInstance();
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent back = new Intent(ReportHBAG.this, ReportActivity.class);
+                startActivity(back);
+            }
+        });
         imageButtonCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

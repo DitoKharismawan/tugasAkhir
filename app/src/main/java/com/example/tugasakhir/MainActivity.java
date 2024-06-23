@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchUserDataMain() {
+        TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+        String username = app.getUsername();
+        String origin = app.getOrigin();
         FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -86,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                     // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         // Assuming 'username' and 'origin' are child nodes under each user
-                        String username = userSnapshot.child("username").getValue(String.class);
-                        String origin = userSnapshot.child("origin").getValue(String.class);
+                       // String username = userSnapshot.child("username").getValue(String.class);
+                        //String origin = userSnapshot.child("origin").getValue(String.class);
                         textViewUser.setText(username != null ?"Halo, "+ username : "User");
                         textViewOrigin.setText(origin!=null?"Lokasi, "+origin :"User");
                         // Stop after fetching the first user's data
