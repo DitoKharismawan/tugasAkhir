@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                        // String username = userSnapshot.child("username").getValue(String.class);
                         //String origin = userSnapshot.child("origin").getValue(String.class);
                         textViewUser.setText(username != null ?"Halo, "+ username : "User");
-                        textViewOrigin.setText(origin!=null?"Lokasi, "+origin :"User");
+                        textViewOrigin.setText(origin!=null?origin :"User");
                         // Stop after fetching the first user's data
                         break;
                     }

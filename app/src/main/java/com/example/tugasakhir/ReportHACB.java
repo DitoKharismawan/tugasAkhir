@@ -7,6 +7,11 @@ import android.app.DatePickerDialog;  // Import for DatePickerDialog
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,18 +39,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -147,7 +157,24 @@ public class ReportHACB extends AppCompatActivity {
 
     private void generatePdf() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("bags");
-        String selectedTimestamp = editTextDate.getText().toString();
+        String selectedTimestamp = editTextDate.getText().toString(); // Assuming editTextDate contains the date in a suitable format (e.g., "yyyy-MM-dd")
+
+// Create SimpleDateFormat objects for input and output formats
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd"); // Assuming input format is "yyyy-MM-dd"
+        SimpleDateFormat outputFormat = new SimpleDateFormat("d MMMM yyyy", new Locale("id", "ID")); // Indonesian format
+
+// Parse the date using inputFormat
+        Date date;
+        try {
+            date = inputFormat.parse(selectedTimestamp);
+        } catch (ParseException e) {
+            // Handle parsing exception (e.g., invalid date format)
+            Log.e("ReportHACB", "Error parsing date: " + e.getMessage());
+            date = new Date(); // Use current date if parsing fails
+        }
+
+// Format the date using outputFormat
+        String formattedDate = outputFormat.format(date);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -162,30 +189,54 @@ public class ReportHACB extends AppCompatActivity {
 
                     // Open the document
                     document.open();
+                    // Get resources object
+                    Resources resources = getResources();
 
-                    // Add report title
-                    Paragraph reportTitle = new Paragraph("HACB Report - " + editTextDate.getText().toString());
-                    reportTitle.setAlignment(Element.ALIGN_CENTER);
-                    reportTitle.setFont(new Font(Font.FontFamily.HELVETICA, 50, Font.BOLD));
+                    // Get drawable resource identifier
+                    int drawableId = resources.getIdentifier("jne", "drawable", getPackageName());
+
+                    // Create drawable object
+                    Drawable drawable = resources.getDrawable(drawableId);
+
+                    // Convert drawable to bitmap (assuming drawable is a bitmap)
+                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+
+                    // Rest of the code using the bitmap
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    Image companyLogo = Image.getInstance(stream.toByteArray());
+                    companyLogo.setAbsolutePosition(25, 700);
+                    companyLogo.scalePercent(10);
+                    document.add(companyLogo);
+                    document.add(new Paragraph(" "));
+
+                    // Membuat font tebal dengan ukuran tertentu
+                    Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+                    Font sizeFont = FontFactory.getFont(FontFactory.HELVETICA, 15);
+                    Paragraph reportTitle = new Paragraph("Handover Create AWB to BAG Report",boldFont);
+
+                    reportTitle.setAlignment(Element.ALIGN_RIGHT);
+                    reportTitle.setFont(new Font(Font.FontFamily.HELVETICA, 60, Font.BOLD));
                     document.add(reportTitle);
                     document.add(new Paragraph(" "));
                     // Add a table to display bagCtx data
                     PdfPTable table = new PdfPTable(7);
-                    table.setWidthPercentage(100);
+                    table.setWidthPercentage(105);
 
                     // Set table header cells
-                    String[] headers = {"Bag ID","Bag = Connote", "Facility Code", "Origin", "Total Connote", "User", "Timestamp"};
+                    String[] headers = {"Bag ID","Bag = Connote", "Remarks", "Origin", "Total Connote", "User", "Tanggal"};
                     for (String header : headers) {
-                        PdfPCell headerCell = new PdfPCell(new Phrase(header));
+                        PdfPCell headerCell = new PdfPCell(new Phrase(header,sizeFont));
                         headerCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
                         table.addCell(headerCell);
                     }
+
                     String selectedDate = editTextDate.getText().toString();
                     // Add bagCtx data to table rows
                     for (DataSnapshot bagSnapshot : dataSnapshot.getChildren()) {
                         String bagId = bagSnapshot.child("bagId").getValue(String.class);
                         String bagCtx = bagSnapshot.child("bagCtx").getValue(Boolean.parseBoolean(toString().replace("", "").replace("", ""))).toString();
-                        String facilityCode = bagSnapshot.child("facilityCode").getValue(String.class);
+                        String remarks = bagSnapshot.child("remarks").getValue(String.class);
                         String origin = bagSnapshot.child("origin").getValue(String.class);
                         String totalConnote = String.valueOf(bagSnapshot.child("totalConnote").getValue(Integer.class));
                         String user = bagSnapshot.child("user").getValue(String.class);
@@ -193,7 +244,7 @@ public class ReportHACB extends AppCompatActivity {
                         if (timestamp != null && timestamp.startsWith(selectedDate)) {
                             table.addCell(new PdfPCell(new Phrase(bagId)));
                             table.addCell(new PdfPCell(new Phrase(bagCtx)));
-                            table.addCell(new PdfPCell(new Phrase(facilityCode)));
+                            table.addCell(new PdfPCell(new Phrase(remarks)));
                             table.addCell(new PdfPCell(new Phrase(origin)));
                             table.addCell(new PdfPCell(new Phrase(totalConnote)));
                             table.addCell(new PdfPCell(new Phrase(user)));
@@ -204,9 +255,25 @@ public class ReportHACB extends AppCompatActivity {
                     }
 
                     }
+
                     // Add table to the document
                     document.add(table);
+                    document.add(new Paragraph(" "));
+                    document.add(new Paragraph(" "));
 
+                    Paragraph reportSign = new Paragraph("Jakarta, " + formattedDate,sizeFont);
+                    reportSign.setAlignment(Element.ALIGN_BOTTOM);
+                    reportSign.setAlignment(Element.ALIGN_RIGHT);
+                    reportSign.setFont(new Font(Font.FontFamily.HELVETICA, 70, Font.BOLD+Font.BOLD));
+                    document.add(reportSign);
+                    document.add(new Paragraph(" "));
+                    TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
+                    String nama = app.getNama();
+                    Paragraph reportName = new Paragraph(nama,sizeFont);
+                    reportName.setAlignment(Element.ALIGN_BOTTOM);
+                    reportName.setAlignment(Element.ALIGN_RIGHT);
+                    reportName.setFont(new Font(Font.FontFamily.HELVETICA, 70, Font.BOLD+Font.BOLD));
+                    document.add(reportName);
                     // Close the document
                     document.close();
                     outputStream.close();

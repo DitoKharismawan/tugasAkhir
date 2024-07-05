@@ -5,6 +5,7 @@ import android.app.Application;
 public class TugasAkhirContext extends Application {
     private String userId;
     private String username;
+    private String nama;
     private String origin;
     private String fCode;
 
@@ -23,6 +24,11 @@ public class TugasAkhirContext extends Application {
     public void setUsername(String username) {
         this.username = username;
     }
+
+
+    public String getNama() {return nama;}
+
+    public void setNama(String nama) {this.nama = nama;}
 
     public String getOrigin() {
         return origin;

@@ -65,10 +65,12 @@ public class Login extends AppCompatActivity {
                                     String userId = snapshot.child(username).getKey();
                                     String userOrigin = snapshot.child(username).child("origin").getValue(String.class);
                                     String userFCode = snapshot.child(username).child("fCode").getValue(String.class);
+                                    String userNama = snapshot.child(username).child("nama").getValue(String.class);
                                     TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
                                     app.setUserId(userId);
                                     app.setUsername(username);
                                     app.setOrigin(userOrigin);
+                                    app.setNama(userNama);
                                     app.setFCode(userFCode);
                                     Intent masuk = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(masuk);

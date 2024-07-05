@@ -92,14 +92,6 @@ public class ViewDetailHoBag extends AppCompatActivity {
         // Access and modify adaptedDataList from within the Activity
         Toast.makeText(getApplicationContext(), "[Direct] : " + bagCtx + " [By Idx] : " + adaptedDataList.get(arrayIndex).getBagId(), Toast.LENGTH_SHORT).show();
         listAdapter.remove(adaptedDataList.get(arrayIndex));
-
-        // Ensure scannedResultsHoBag is not null
-//        if (scannedResultsHoBag != null && scannedResultsHoBag.size() > arrayIndex) {
-            gScannedResultsHoBag.remove(arrayIndex.intValue());  // Remove from scannedResultsHoBag
-//        } else {
-//            Log.w("ViewDetailHoBag", "Invalid arrayIndex or scannedResultsHoBag is null!");
-//        }
-
-        // Update ListView adapter to reflect changes (already implemented)
+            gScannedResultsHoBag.remove(arrayIndex.intValue());
     }
 }
