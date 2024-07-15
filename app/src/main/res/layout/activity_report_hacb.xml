@@ -82,7 +82,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.583"
-        app:srcCompat="@drawable/baseline_local_printshop_24" />
+        app:srcCompat="@drawable/baseline_local_printshop_24"
+        android:onClick="onScanButtonClicked"
+        android:background="?android:attr/selectableItemBackgroundBorderless"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

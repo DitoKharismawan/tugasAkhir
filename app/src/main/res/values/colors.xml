@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>\
     <color name="colorPrimaryDark">#115CA6</color>
     <color name="divider_color">#DDDDDD</color>
+    <color name="blue">#433D8B</color>
+    <color name="red">#E4003A</color>
 </resources>

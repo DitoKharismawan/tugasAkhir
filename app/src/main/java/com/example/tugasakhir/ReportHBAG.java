@@ -147,7 +147,7 @@ public class ReportHBAG extends AppCompatActivity {
 
 // Create SimpleDateFormat objects for input and output formats
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd"); // Assuming input format is "yyyy-MM-dd"
-        SimpleDateFormat outputFormat = new SimpleDateFormat("d MMMM yyyy", new Locale("id", "ID")); // Indonesian format
+        SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID")); // Full weekday name, then year-month-day
 
 // Parse the date using inputFormat
         Date date;
@@ -241,8 +241,11 @@ public class ReportHBAG extends AppCompatActivity {
 
             // Add table to the document
             document.add(table);
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph(" "));
+            int numEmptyParagraphs = 15; // Adjust this value as needed
+
+            for (int i = 0; i < numEmptyParagraphs; i++) {
+                document.add(new Paragraph(" "));
+            }
 
             Paragraph reportSign = new Paragraph("Jakarta, " + formattedDate,sizeFont);
             reportSign.setAlignment(Element.ALIGN_BOTTOM);

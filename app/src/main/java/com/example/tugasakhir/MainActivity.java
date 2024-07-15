@@ -1,9 +1,12 @@
 package com.example.tugasakhir;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     CardView createBag, handOverBag, receivingBag,revisiDestBag,report;
     TextView textViewUser, textViewOrigin;
+    Dialog dialog;
+    Button btnDialogCancel,btnDialogLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textViewUser = findViewById(R.id.textViewUser);
         textViewOrigin = findViewById(R.id.textViewOrigin);
-
+dialog= new Dialog(MainActivity.this);
+dialog.setContentView(R.layout.custom_dialog_box);
+dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg));
+dialog.setCancelable(false);
+btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
+        btnDialogLogout=dialog.findViewById(R.id.btnDialogLogout);
         createBag = findViewById(R.id.createBag);
         handOverBag = findViewById(R.id.handOverBag);
         receivingBag = findViewById(R.id.receivingBag);
@@ -69,11 +80,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(create);
             }
         });
+        btnDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnDialogLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutUser();
+                dialog.dismiss();
+            }
+        });
         // Logout functionality
         findViewById(R.id.logOut).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+              dialog.show();
             }
         });
     }
