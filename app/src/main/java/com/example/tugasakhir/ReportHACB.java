@@ -256,7 +256,7 @@ public class ReportHACB extends AppCompatActivity {
 
                     // Add table to the document
                     document.add(table);
-                    int numEmptyParagraphs = 10; // Adjust this value as needed
+                    int numEmptyParagraphs = 2; // Adjust this value as needed
 
                     for (int i = 0; i < numEmptyParagraphs; i++) {
                         document.add(new Paragraph(" "));
