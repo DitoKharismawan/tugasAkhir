@@ -77,10 +77,7 @@ public class HandoverBagActivity extends AppCompatActivity {
             }
         });
         DatabaseReference facilitiesRef = FirebaseDatabase.getInstance().getReference().child("facilities");
-
-        // Create an ArrayList to hold the facility codes
         final ArrayList<String> facilityCodes = new ArrayList<>();
-
         facilitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -98,22 +95,16 @@ public class HandoverBagActivity extends AppCompatActivity {
                             String facilityListItem = facilityCode + " : " + facilityName;
                             facilityList.add(facilityListItem);
                         } else {
-                            // Handle case where "facilityName" node doesn't exist
-                            // ...
                         }
                     }
-
-                    // Create an ArrayAdapter with the combined facility information
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(HandoverBagActivity.this, android.R.layout.simple_spinner_item, facilityList);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     adapter.insert("Pilih Facility Destinasi", 0);
-                    // Set the adapter to the Spinner
                     facilityCodeSpinner.setAdapter(adapter);
                 } else {
                     Toast.makeText(HandoverBagActivity.this, "No facilities found in Firebase.", LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(HandoverBagActivity.this, "Failed to retrieve facility codes: " + databaseError.getMessage(), LENGTH_SHORT).show();
@@ -131,36 +122,21 @@ public class HandoverBagActivity extends AppCompatActivity {
                 fillEditTextWithAutoIncrementAndTimestamp();
                 fetchUserData();
             }
-
             private void fillEditTextWithAutoIncrementAndTimestamp() {
-                // Retrieve the saved counter value from SharedPreferences (if any)
                 int savedHoBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("hoBagCounter", 0);
-
-                // Increment the counter based on the saved value
                 int hoBagCounter = savedHoBagCounter + 1;
-
-                // Update the SharedPreferences with the new counter value
                 getSharedPreferences("app_data", MODE_PRIVATE)
                         .edit()
                         .putInt("hoBagCounter", hoBagCounter)
                         .apply();
-
-
                 editTextHoBagNo.setText(String.valueOf(bagPrefix + hoBagCounter));
-
-                // Mengatur tanggal dengan format timestamp
                 String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
                 editTextTanggalHo.setText(currentDate);
-
-                // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
             }
         });
-
-        // Set onClickListener untuk tombol View Detail
         buttonViewDetailHoBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Buat Intent untuk memulai ButtonViewDetailActivity
                 Intent intent = new Intent(HandoverBagActivity.this, ViewDetailHoBag.class);
                 intent.putExtra("scannedResults", gScannedResultsHoBag);
                 startActivity(intent);
@@ -175,54 +151,32 @@ public class HandoverBagActivity extends AppCompatActivity {
                 String facilityCode = facilityCodeSpinner.getSelectedItem().toString().trim(); // Assuming facility code is selected from spinner
                 String tanggal = editTextTanggalHo.getText().toString().trim();
                 String remarks = editTextRemarks.getText().toString().trim();
-
-                // Validation (Optional)
                 if (indexBag.isEmpty() || user.isEmpty() || facilityCode.isEmpty() || tanggal.isEmpty() || gScannedResultsHoBag.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please fill in all required fields and scan items", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // Process scanned data (Optional)
-                // ...
-
-                // Create BagData object
                 BagDataHoBag newBag = new BagDataHoBag(indexBag, user, facilityCode, tanggal,remarks, gScannedResultsHoBag);
-
-                // Firebase Database interaction
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference();
-
-                // Create a reference for the specific bag under HoBags
                 DatabaseReference bagRef = bagsRef.child("HoBags").child(indexBag);
-
-                // Save data to HoBags node directly
                 bagRef.setValue(newBag)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                // Data saved successfully in HoBags
-                                // ...
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Handle errors saving to HoBags
                                 Toast.makeText(getApplicationContext(), "Gagal menyimpan data di HoBags: " + e.getMessage(), LENGTH_SHORT).show();
                             }
                         });
-
-                // Prepare data for individual scan results under bagsToHo (modify as needed)
                 HashMap<String, Object> bagsToHoData = new HashMap<>();
                 for (String scannedItem : gScannedResultsHoBag) {
                     HashMap<String, String> scanResultData = new HashMap<>();
-                    scanResultData.put("HoId", indexBag);  // Add HoId for each scan result
-                    bagsToHoData.put(scannedItem, scanResultData);  // Use scanned item as child node key
+                    scanResultData.put("HoId", indexBag);
+                    bagsToHoData.put(scannedItem, scanResultData);
                 }
-
-                // Create a separate reference for bagsToHo at the top level
                 DatabaseReference bagsToHoRef = bagsRef.child("bagsToHo");
-
-                // Save data to bagsToHo node with individual child nodes
                 bagsToHoRef.updateChildren(bagsToHoData)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -234,32 +188,25 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 editTextUserHo.setText("");
                                 editTextTanggalHo.setText("");
                                 editTextRemarks.setText("");
-                                facilityCodeSpinner.setSelection(0); // Reset facility code spinner to first item (index 0)
-                                ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults(); // Clear scanned results
-                                elmIncBag.setText("0"); // Set elmIncBag to empty string
-                            }
+                                facilityCodeSpinner.setSelection(0);
+                                ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults();
+                                elmIncBag.setText("0");                            }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Handle errors saving to bagsToHo
                                 Toast.makeText(getApplicationContext(), "Gagal menyimpan data di bagsToHo: " + e.getMessage(), LENGTH_SHORT).show();
                             }
                         });
             }
         });
-
-
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         ArrayList<String> gScannedResultsHoBag = ((TugasAkhirContext) getApplicationContext()).getGlobalData().getScannedResults();
         elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
-
     private void fetchUserData() {
         TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
         String username = app.getUsername();
@@ -267,37 +214,28 @@ public class HandoverBagActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         editTextUserHo.setText(username != null ? username : "User");
-
-                        // Stop after fetching the first user's data
                         break;
                     }
                 } else {
                     Log.d("FirebaseData", "DataSnapshot does not exist");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
     }
-
-
     private void startBarcodeScanner() {
-        // Inisialisasi IntentIntegrator
         IntentIntegrator integrator = new IntentIntegrator(HandoverBagActivity.this);
         integrator.setRequestCode(50003);
-        // Konfigurasi untuk IntentIntegrator
         integrator.setPrompt("Scan a barcode");
-        integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
-        integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
-        integrator.initiateScan(); // Memulai pemindaian
+        integrator.setBeepEnabled(true);
+        integrator.setOrientationLocked(false);
+        integrator.initiateScan();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent bags) {
         super.onActivityResult(requestCode, resultCode, bags);
@@ -312,17 +250,11 @@ public class HandoverBagActivity extends AppCompatActivity {
                         // Create a temporary ArrayList to hold the new scan result
                         ArrayList<String> newScannedResults = new ArrayList<>();
                         newScannedResults.add(scannedData);
-
-                        // Add new scanned results to the existing scannedResultsHoBag
                         if (gScannedResultsHoBag == null) {
                             gScannedResultsHoBag = new ArrayList<>();
                         }
                         gScannedResultsHoBag.addAll(newScannedResults);
-
-                        // Update elmIncBag text
                         elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
-
-                        // Update ListView to display the latest scan results
                         if (listViewScannedResultsHoBag != null) {
                             ArrayAdapter<String> adapter = (ArrayAdapter<String>) listViewScannedResultsHoBag.getAdapter();
                             if (adapter != null) {
@@ -332,7 +264,6 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 listViewScannedResultsHoBag.setAdapter(adapter);
                             }
                         }
-                        // Update editTextHoBag with scanned data and clear after 2 seconds
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -345,12 +276,10 @@ public class HandoverBagActivity extends AppCompatActivity {
                                 }, 2000); // Delay for 2 seconds
                             }
                         });
-                        // Optional: Print scannedResultsHoBag to check if data is added correctly
                         Log.d("ScannedResults", gScannedResultsHoBag.toString());
                     }
                 }
             }
         }
     }
-
 }

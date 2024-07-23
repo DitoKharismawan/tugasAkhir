@@ -43,11 +43,6 @@ public class CreateActivity extends AppCompatActivity {
     private int bagCounter = 0;
     private final String bagPrefix = "CGK_HACB_";
     ImageButton scanButtonBag, scanButtonConnote;
-//    ArrayList<String> scannedResults; // ArrayList untuk menyimpan hasil scan barcode
-//    ArrayList<String> scansBag;
-//    ArrayList<String> scansConnote;
-//    HashMap<String, ArrayList<String>> bagsHolder;
-
     TugasAkhirContext taCtx;
     BagDataStore bagCtx;
 
@@ -55,7 +50,6 @@ public class CreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-
         editTextAwbBag = findViewById(R.id.editTextAwbBag);
         editTextTanggal = findViewById(R.id.editTextTanggal);
         editTextUser = findViewById(R.id.editTextUser);
@@ -73,15 +67,8 @@ public class CreateActivity extends AppCompatActivity {
         elmIncBag = findViewById(R.id.textViewIncrementBag);
         elmEditTextBag = findViewById(R.id.editTextBag);
         elmEditTextConnote = findViewById(R.id.editTextConnote);
-
-//        scannedResults = new ArrayList<>(); // Inisialisasi ArrayList
-//        scansBag = new ArrayList<>(); // Inisialisasi ArrayList
-//        scansConnote = new ArrayList<>();
-//        bagsHolder = new HashMap<>();
         taCtx = (TugasAkhirContext)getApplicationContext();
         bagCtx = taCtx.getBagDataStore();
-
-        // Set onClickListener untuk tombol Create
         buttonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,8 +76,6 @@ public class CreateActivity extends AppCompatActivity {
                 fetchUserData();
             }
         });
-
-        // Set onClickListener untuk tombol Back
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,68 +83,47 @@ public class CreateActivity extends AppCompatActivity {
                 startActivity(back);
             }
         });
-
-        // Set onClickListener untuk tombol View Detail
         buttonViewDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Buat Intent untuk memulai ButtonViewDetailActivity
-//                Toast.makeText(getApplicationContext(), "[CreateActivity] OnClick", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CreateActivity.this, ButtonViewDetailActivity.class);
-                // Kirimkan data pemindaian ke ButtonViewDetailActivity
-//                intent.putStringArrayListExtra("scannedResults", scannedResults);
-//                intent.putExtra("scansBag", scansBag);
                 intent.putExtra("bagsHolder", bagCtx.getBagsHolder());
                 startActivity(intent);
             }
         });
-
-
-        // Set onClickListener untuk tombol Scan Bag
         scanButtonBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Inisialisasi IntentIntegrator
                 IntentIntegrator integrator = new IntentIntegrator(CreateActivity.this);
                 integrator.setRequestCode(50001);
-                // Konfigurasi untuk IntentIntegrator
                 integrator.setPrompt("Scan a barcode");
-                integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
-                integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
-                integrator.initiateScan(); // Memulai pemindaian
+                integrator.setBeepEnabled(true);
+                integrator.setOrientationLocked(false);
+                integrator.initiateScan();
             }
         });
-
-        // Set onClickListener untuk tombol Scan Connote
         scanButtonConnote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (elmEditTextBag.getText().length() == 0) {
-//                    Toast.makeText(getApplicationContext(), "[C] " + elmEditTextBag.getText() + " [S] " + elmEditTextBag.getText().length(), Toast.LENGTH_LONG).show();
                     Toast.makeText(getApplicationContext(), "Silakan scan nomor BAG terlebih dahulu", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    // Inisialisasi IntentIntegrator
                     IntentIntegrator integrator = new IntentIntegrator(CreateActivity.this);
-                    // Konfigurasi untuk IntentIntegrator
                     integrator.setRequestCode(50002);
                     integrator.setPrompt("Scan a barcode");
-                    integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
-                    integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
-                    integrator.initiateScan(); // Memulai pemindaian
+                    integrator.setBeepEnabled(true);
+                    integrator.setOrientationLocked(false);
+                    integrator.initiateScan();
                 }
             }
         });
-        // Set onClickListener untuk tombol Create
         approveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String awbKey = elmEditTextBag.getText().toString();
                 String indexBag = editTextAwbBag.getText().toString();
-                // Mendapatkan referensi database
                 DatabaseReference bagsRef = FirebaseDatabase.getInstance().getReference().child("bags");
-
-                // Membuat objek untuk data tas baru
                 BagData newBag = new BagData(
                         indexBag,
                         editTextUser.getText().toString(),
@@ -169,32 +133,21 @@ public class CreateActivity extends AppCompatActivity {
                         editTextTanggal.getText().toString(),
                         bagCtx.getBagsHolder()
                 );
-
-                // Menghitung total connote
                 int totalConnote = newBag.calculateTotalConnote();
-
-                // Menambahkan totalConnote ke data tas baru
                 newBag.setTotalConnote(totalConnote);
-
-                // Menyimpan data tas baru ke Firebase
-
-                // Menyimpan data tas ke Firebase
                 bagsRef.child(awbKey).setValue(newBag)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                // Data berhasil disimpan
                                 Toast.makeText(getApplicationContext(), "Data berhasil disimpan di Firebase", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Penanganan jika ada kesalahan saat menyimpan data
                                 Toast.makeText(getApplicationContext(), "Gagal menyimpan data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                // Mengosongkan nilai-nilai pada EditText
                 editTextAwbBag.setText("");
                 editTextUser.setText("");
                 editTextOrigin.setText("");
@@ -205,55 +158,27 @@ public class CreateActivity extends AppCompatActivity {
                 elmEditTextConnote.setText("");
                 elmIncBag.setText("0");
                 elmIncConnote.setText("0");
-                // Mengosongkan ArrayList scannedResults, scansBag, scansConnote, dan bagsHolder
-//                scannedResults.clear();
-//                scansBag.clear();
-//                scansConnote.clear();
                 bagCtx.getBagsHolder().clear();
 
             }
         });
-
-//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                // Whatever you want
-//                // when back pressed
-//                Toast.makeText(getApplicationContext(), "back", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
     }
-
     @Override
     protected void onResume() {
       super.onResume();
       updateCountDisplay();
     }
-
     private void fillEditTextWithAutoIncrementAndTimestamp() {
-        // Retrieve the saved counter value from SharedPreferences (if any)
         int savedBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("bagCounter", 0);
-
-        // Increment the counter based on the saved value
         bagCounter = savedBagCounter + 1;
-
-        // Update the SharedPreferences with the new counter value
         getSharedPreferences("app_data", MODE_PRIVATE)
                 .edit()
                 .putInt("bagCounter", bagCounter)
                 .apply();
-
-
         editTextAwbBag.setText(String.valueOf(bagPrefix + bagCounter));
-
-        // Mengatur tanggal dengan format timestamp
         String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
         editTextTanggal.setText(currentDate);
-
-        // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
     }
-
     private void fetchUserData() {
         TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
         String username = app.getUsername();
@@ -263,28 +188,22 @@ public class CreateActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        // Assuming 'username' and 'origin' are child nodes under each user
                         editTextUser.setText(username != null ? username : "User");
                         editTextOrigin.setText(origin != null ? origin : "Origin");
                         editTextFacCode.setText(fCode != null ? fCode : "Facility Code");
-                        // Stop after fetching the first user's data
                         break;
                     }
                 } else {
                     Log.d("FirebaseData", "DataSnapshot does not exist");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
     }
-
-    // Override onActivityResult to handle the scan result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent awb) {
         super.onActivityResult(requestCode, resultCode, awb);
@@ -292,8 +211,7 @@ public class CreateActivity extends AppCompatActivity {
             IntentResult result = IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, awb);
             if (result != null) {
                 if (result.getContents() != null) {
-                    String scannedData = result.getContents(); // Data barcode yang discan
-                    // Tambahkan hasil scan ke dalam ArrayList
+                    String scannedData = result.getContents();
                     if (bagCtx.getBagsHolder().containsKey(scannedData)) {
                         Toast.makeText(getApplicationContext(), "BAG " + scannedData + " sudah ada sebelumnya!", Toast.LENGTH_LONG).show();
                         elmEditTextBag.setText(scannedData);
@@ -350,27 +268,16 @@ public class CreateActivity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(getApplicationContext(), "Connote " + scannedData + " untuk BAG " + currentBag + " ditambahkan!", Toast.LENGTH_LONG).show();
-//                        scannedResults.add(scannedData);
-//                    Toast.makeText(getApplicationContext(), "[SCN DATAS] = " + scannedResults.toString(), Toast.LENGTH_LONG).show();
-//                        scansConnote.add(scannedData);
-//                        bagsHolder.get(currentBag).add(scannedData);
                         bagCtx.appendConnote(currentBag, scannedData);
                     }
-//                    elmIncBag.setText(scansBag.size() + "");
                     elmEditTextConnote.setText(scannedData);
-//                    elmIncConnote.setText(scansConnote.size() + "");
                     updateCountDisplay();
-//                    TextView elementText = findViewById(R.id.textIncrementConnote);
-//                    elementText.setText(scansConnote.size());
-                    // Menggunakan Handler untuk menghapus teks setelah 1 detik
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            // Mengosongkan teks pada elmEditTextBag
-                            // ini knp dikosongin to
                             elmEditTextConnote.setText("");
                         }
-                    }, 2000); // Delay 2 detik (2000 milidetik)
+                    }, 2000);
                 }
             }
         }
@@ -378,20 +285,14 @@ public class CreateActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Unhandled ActivityResult : " + requestCode, Toast.LENGTH_LONG).show();
         }
     }
-
     private void updateCountDisplay() {
         elmIncBag.setText(bagCtx.getBagsHolder().size() + "");
         elmIncConnote.setText(bagCtx.getTotalConnoteCount() + "");
     }
-
-
-
-
     private AlertDialog.Builder showConfirmDialog(String judul, String pesan) {
         return new AlertDialog.Builder(this)
                 .setTitle(judul)
-                .setMessage(
-                        pesan)
+                .setMessage(pesan)
                 .setIcon(
                         getResources().getDrawable(
                                 android.R.drawable.ic_dialog_alert));

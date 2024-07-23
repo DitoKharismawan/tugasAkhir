@@ -24,19 +24,18 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewUser, textViewOrigin;
     Dialog dialog;
     Button btnDialogCancel,btnDialogLogout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textViewUser = findViewById(R.id.textViewUser);
         textViewOrigin = findViewById(R.id.textViewOrigin);
-dialog= new Dialog(MainActivity.this);
-dialog.setContentView(R.layout.custom_dialog_box);
-dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg));
-dialog.setCancelable(false);
-btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
+        dialog= new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.custom_dialog_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg));
+        dialog.setCancelable(false);
+        btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
         btnDialogLogout=dialog.findViewById(R.id.btnDialogLogout);
         createBag = findViewById(R.id.createBag);
         handOverBag = findViewById(R.id.handOverBag);
@@ -44,7 +43,6 @@ btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
         revisiDestBag = findViewById(R.id.revisiDestBag);
         report=findViewById(R.id.report);
         fetchUserDataMain();
-
         createBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +99,6 @@ btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
             }
         });
     }
-
     private void fetchUserDataMain() {
         TugasAkhirContext app = (TugasAkhirContext) getApplicationContext();
         String username = app.getUsername();
@@ -110,37 +107,27 @@ btnDialogCancel=dialog.findViewById(R.id.btnDialogCancel);
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        // Assuming 'username' and 'origin' are child nodes under each user
-                       // String username = userSnapshot.child("username").getValue(String.class);
-                        //String origin = userSnapshot.child("origin").getValue(String.class);
                         textViewUser.setText(username != null ?"Halo, "+ username : "User");
                         textViewOrigin.setText(origin!=null?origin :"User");
-                        // Stop after fetching the first user's data
                         break;
                     }
                 } else {
                     Log.d("FirebaseData", "DataSnapshot does not exist");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
     }
-
     private void logoutUser() {
-        // Clear any session data or preferences related to the user
-        // For example, you can clear SharedPreferences here
         SharedPreferences preferences = getSharedPreferences("UserData", MODE_PRIVATE);
         preferences.edit().clear().apply();
-        // Start LoginActivity and clear the task stack
         Intent intent = new Intent(MainActivity.this, Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish(); // Finish MainActivity to prevent going back
+        finish();
     }
 }

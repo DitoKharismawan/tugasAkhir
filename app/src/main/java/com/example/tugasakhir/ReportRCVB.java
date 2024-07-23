@@ -65,7 +65,6 @@ public class ReportRCVB extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_report_rcvb);
-
         imageButtonCalendar = findViewById(R.id.imageButtonCalendar);
         editTextDateRCVB = findViewById(R.id.editTextDateRCVB);
         printPdfRCVB = findViewById(R.id.printPdfRCVB);
@@ -85,7 +84,6 @@ public class ReportRCVB extends AppCompatActivity {
                 showDatePicker();
             }
         });
-
         printPdfRCVB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,12 +91,10 @@ public class ReportRCVB extends AppCompatActivity {
             }
         });
     }
-
     private void createAndPrintPdf() {
         String selectedDate = editTextDateRCVB.getText().toString();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date parsedDate = null;
-
         try {
             parsedDate = dateFormat.parse(selectedDate);
         } catch (ParseException e) {
@@ -106,9 +102,7 @@ public class ReportRCVB extends AppCompatActivity {
             Toast.makeText(this, "Invalid date format", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String timestampPrefix = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(parsedDate);
-
         Query query = database.getReference("receivingBags");
         query.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -124,7 +118,6 @@ public class ReportRCVB extends AppCompatActivity {
                                 matchingSnapshots.add(bagSnapshot);
                             }
                         }
-
                         if (!matchingSnapshots.isEmpty()) {
                             generatePdf();
                         } else {
@@ -139,24 +132,18 @@ public class ReportRCVB extends AppCompatActivity {
             }
         });
     }
-
     private void generatePdf() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("receivingBags");
-        String selectedTimestamp = editTextDateRCVB.getText().toString(); // Assuming editTextDate contains the date in a suitable format (e.g., "yyyy-MM-dd")
-
-// Create SimpleDateFormat objects for input and output formats
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd"); // Assuming input format is "yyyy-MM-dd"
-        SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID")); // Full weekday name, then year-month-day
-// Parse the date using inputFormat
+        String selectedTimestamp = editTextDateRCVB.getText().toString();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE, d MMMM yyyy", new Locale("id", "ID"));
         Date date;
         try {
             date = inputFormat.parse(selectedTimestamp);
         } catch (ParseException e) {
-            // Handle parsing exception (e.g., invalid date format)
             Log.e("ReportHACB", "Error parsing date: " + e.getMessage());
-            date = new Date(); // Use current date if parsing fails
+            date = new Date();
         }
-
 // Format the date using outputFormat
         String formattedDate = outputFormat.format(date);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,25 +152,14 @@ public class ReportRCVB extends AppCompatActivity {
                 Document document = new Document();
                 FileOutputStream outputStream = null;
         try {
-            // Create output stream and initialize PdfWriter
             File pdfFile = new File(getExternalFilesDir(null), "report_rcvb.pdf");
             outputStream = new FileOutputStream(pdfFile);
             PdfWriter.getInstance(document, outputStream);
-
-            // Open the document
             document.open();
             Resources resources = getResources();
-
-            // Get drawable resource identifier
             int drawableId = resources.getIdentifier("jne", "drawable", getPackageName());
-
-            // Create drawable object
             Drawable drawable = resources.getDrawable(drawableId);
-
-            // Convert drawable to bitmap (assuming drawable is a bitmap)
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-
-            // Rest of the code using the bitmap
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             Image companyLogo = Image.getInstance(stream.toByteArray());
@@ -191,8 +167,6 @@ public class ReportRCVB extends AppCompatActivity {
             companyLogo.scalePercent(10);
             document.add(companyLogo);
             document.add(new Paragraph(" "));
-
-            // Membuat font tebal dengan ukuran tertentu
             Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
             Font sizeFont = FontFactory.getFont(FontFactory.HELVETICA, 15);
             Paragraph reportTitle = new Paragraph("Handover Receiving BAG Report",boldFont);
@@ -200,21 +174,15 @@ public class ReportRCVB extends AppCompatActivity {
             reportTitle.setFont(new Font(Font.FontFamily.HELVETICA, 60, Font.BOLD));
             document.add(reportTitle);
             document.add(new Paragraph(" "));
-            // Add a table to display bagCtx data
             PdfPTable table = new PdfPTable(5);
             table.setWidthPercentage(105);
-
-            // Set table header cells
             String[] headers = {"id RCVB", "Bag", "Remarks", "User", "Tanggal"};
             for (String header : headers) {
                 PdfPCell headerCell = new PdfPCell(new Phrase(header,sizeFont));
                 headerCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
                 table.addCell(headerCell);
             }
-
-            // Add data to table rows
             String selectedDate = editTextDateRCVB.getText().toString();
-            // Add data to table rows
             for (DataSnapshot bagSnapshot : dataSnapshot.getChildren()){
                 String bagId = bagSnapshot.child("bagRcvId").getValue(String.class);
                 String HoBag = bagSnapshot.child("scannedResultsRcvBag").getValue(Boolean.parseBoolean(toString().replace("", "").replace("", ""))).toString();
@@ -231,16 +199,11 @@ public class ReportRCVB extends AppCompatActivity {
                     Log.i("ReportHBAG", "No 'bagCtx' data found in snapshot!");
                 }
             }
-
-            // Add table to the document
             document.add(table);
-            int numEmptyParagraphs = 15; // Adjust this value as needed
-
+            int numEmptyParagraphs = 15;
             for (int i = 0; i < numEmptyParagraphs; i++) {
                 document.add(new Paragraph(" "));
             }
-
-
             Paragraph reportSign = new Paragraph("Jakarta, " + formattedDate,sizeFont);
             reportSign.setAlignment(Element.ALIGN_BOTTOM);
             reportSign.setAlignment(Element.ALIGN_RIGHT);
@@ -257,8 +220,6 @@ public class ReportRCVB extends AppCompatActivity {
             // Close the document
             document.close();
             outputStream.close();
-
-            // Show success message
             Toast.makeText(ReportRCVB.this, "PDF generated successfully!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();

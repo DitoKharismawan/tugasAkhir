@@ -22,39 +22,26 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 
 public class Login extends AppCompatActivity {
-
     private Button btnLogin;
-
     private ImageView imageView2;
     private EditText etUsername, etPassword;
-
     private DatabaseReference database;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         btnLogin = findViewById(R.id.btnLogin);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         imageView2 = findViewById(R.id.imageView2);
-
-
-
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
                 database = FirebaseDatabase.getInstance().getReference("users");
-               // database = FirebaseDatabase.getInstance().getReferenceFromUrl("https://tugasakhir-30385-default-rtdb.firebaseio.com/users");
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Username Atau Password Salah", Toast.LENGTH_SHORT).show();
-//                    Intent masuk = new Intent(getApplicationContext(), MainActivity.class);
-//                    startActivity(masuk);
                 } else {
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -79,11 +66,8 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Data belum terdaftar", Toast.LENGTH_SHORT).show();
                             }
                         }
-
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
                         }
                     });
                 }
@@ -92,7 +76,6 @@ public class Login extends AppCompatActivity {
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getApplicationContext(), "Image terklik", Toast.LENGTH_SHORT).show();
                 Intent rdbActivityIntent = new Intent(getApplicationContext(), RDBDebugger.class);
                 startActivity(rdbActivityIntent);
             }

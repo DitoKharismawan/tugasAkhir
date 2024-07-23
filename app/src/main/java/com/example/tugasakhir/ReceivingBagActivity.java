@@ -66,14 +66,13 @@ public class ReceivingBagActivity extends AppCompatActivity {
         scanButtonRcvBag = findViewById(R.id.scanButtonRcvBag);
         scanButtonSearchBag = findViewById(R.id.scanButtonSearchBag);
         buttonDetailOutBag = findViewById(R.id.buttonDetailOutBag);
-        elmIncBag = findViewById(R.id.textViewIncrementOutBag); // Fix the typo (double dot)
+        elmIncBag = findViewById(R.id.textViewIncrementOutBag);
         elmIncRcvBag=findViewById(R.id.textViewIncrementScanBag);
         buttonDetailScanBag = findViewById(R.id.buttonDetailScanBag);
         buttonCreateRcvBag=findViewById(R.id.buttonCreateRcvBag);
         approveButtonRcvBag=findViewById(R.id.approveButtonRcvBag);
         // Initialize empty array list to store scanned results
         gScannedResultsHoBag = new ArrayList<>();
-
         // Update elmIncBag text to reflect the initial size of the array
         updateScannedResultCount();
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +85,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
         buttonDetailOutBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check if there are scanned results before starting the DetailOutstandingActivity
-
-
-                // Create an Intent to start DetailOutstandingActivity
                 Intent intent = new Intent(ReceivingBagActivity.this, DetailOutstandingActivity.class);
                 intent.putExtra("scannedResults", gScannedResultsHoBag);
                 startActivity(intent);
@@ -98,10 +93,6 @@ public class ReceivingBagActivity extends AppCompatActivity {
         buttonDetailScanBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check if there are scanned results before starting the DetailOutstandingActivity
-
-
-                // Create an Intent to start DetailOutstandingActivity
                 Intent intent = new Intent(ReceivingBagActivity.this, DetailScanBagActivity.class);
                 intent.putExtra("scannedResults",scannedResultsRcvBag);
                 startActivity(intent);
@@ -131,36 +122,21 @@ public class ReceivingBagActivity extends AppCompatActivity {
                 fillEditTextWithAutoIncrementAndTimestamp();
                 fetchUserData();
             }
-
-
-
             private void fillEditTextWithAutoIncrementAndTimestamp() {
-                // Retrieve the saved counter value from SharedPreferences (if any)
                 int savedRcvBagCounter = getSharedPreferences("app_data", MODE_PRIVATE).getInt("rcvBagCounter", 0);
-
-                // Increment the counter based on the saved value
                 int rcvBagCounter = savedRcvBagCounter + 1;
-
-                // Update the SharedPreferences with the new counter value
                 getSharedPreferences("app_data", MODE_PRIVATE)
                         .edit()
                         .putInt("rcvBagCounter", rcvBagCounter)
                         .apply();
-
-
                 editTextRcvBagNo.setText(String.valueOf(bagPrefix + rcvBagCounter));
-
-                // Mengatur tanggal dengan format timestamp
                 String currentDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
                 editTextTanggalRcv.setText(currentDate);
-
-                // EditText untuk Nama User dan Origin akan diisi di method fetchUserData()
             }
         });
     }
 
     private void handleApproveButtonClick() {
-        // Validate user input before proceeding
         if (editTextRcvBagNo.getText().toString().isEmpty()) {
             Toast.makeText(this, "Please enter Receiving Bag No.", LENGTH_SHORT).show();
             return;
@@ -170,56 +146,43 @@ public class ReceivingBagActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter Receiving Date.", LENGTH_SHORT).show();
             return;
         }
-
-        // Assuming BagRcvData class represents the data structure for receiving bags
-        String bagKey = editTextRcvBagNo.getText().toString(); // Use editTextRcvBagNo for bagKey
-
+        String bagKey = editTextRcvBagNo.getText().toString();
         BagRcvData newBagData = new BagRcvData(
-                bagKey,  // Use bagKey here
+                bagKey,
                 editTextUserRcv.getText().toString(),
                 editTextTanggalRcv.getText().toString(),
                 editTextRemarksRcv.getText().toString(),
                 scannedResultsRcvBag
         );
-
-        // Save data to Firebase Realtime Database
         DatabaseReference receivingBagsRef = FirebaseDatabase.getInstance().getReference().child("receivingBags");
-
         receivingBagsRef.child(bagKey).setValue(newBagData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Data saved successfully
                         Toast.makeText(getApplicationContext(), "Receiving Bag data saved successfully", Toast.LENGTH_SHORT).show();
-
-                        // Clear UI elements after successful save (optional)
                         clearUiAfterSave();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle errors during data saving
                         Toast.makeText(getApplicationContext(), "Failed to save Receiving Bag data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
     private void clearUiAfterSave() {
         editTextRcvBagNo.setText("");
         editTextTanggalRcv.setText("");
-        editTextUserRcv.setText(""); // Assuming user doesn't need to be reset
+        editTextUserRcv.setText("");
         editTextRemarksRcv.setText("");
         editTextSearchBag.setText("");
         editTextScanRcvBag.setText("");
         elmIncRcvBag.setText("0");
         elmIncBag.setText("0");
         ((TugasAkhirContext) getApplicationContext()).getGlobalData().clearScannedResults();
-        // ... (clear other relevant UI elements if needed)
     }
 
     private void updateScannedResultCount() {
-        // Update the text view to display the current number of scanned results
         elmIncBag.setText(String.valueOf(gScannedResultsHoBag.size()));
     }
     private void fetchUserData() {
@@ -229,143 +192,93 @@ public class ReceivingBagActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Assuming you want to fetch the data of the first user found
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        // Assuming 'username' and 'origin' are child nodes under each user
                         editTextUserRcv.setText(username != null ? username : "User");
-
-                        // Stop after fetching the first user's data
                         break;
                     }
                 } else {
                     Log.d("FirebaseData", "DataSnapshot does not exist");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("FirebaseData", "Error: " + databaseError.getMessage());
             }
         });
     }
-
     private void startBarcodeScanner() {
-        // Inisialisasi IntentIntegrator
         IntentIntegrator integrator = new IntentIntegrator(ReceivingBagActivity.this);
         integrator.setRequestCode(50004);
-        // Konfigurasi untuk IntentIntegrator
         integrator.setPrompt("Scan a barcode");
         integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
         integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
         integrator.initiateScan(); // Memulai pemindaian
     }
-
     private void startBarcodeScannerRcvBag() {
-
-        // Inisialisasi IntentIntegrator
         IntentIntegrator integrator = new IntentIntegrator(ReceivingBagActivity.this);
         integrator.setRequestCode(50005);
-        // Konfigurasi untuk IntentIntegrator
         integrator.setPrompt("Scan a barcode");
-        integrator.setBeepEnabled(true); // Set true jika ingin memainkan suara saat pemindaian berhasil
-        integrator.setOrientationLocked(false); // Set true jika ingin mengunci orientasi layar saat pemindaian
-        integrator.initiateScan(); // Memulai pemindaian
+        integrator.setBeepEnabled(true);
+        integrator.setOrientationLocked(false);
+        integrator.initiateScan();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Handle scan results if the request code matches
         if (requestCode == 50004) {
             IntentResult scanResult = IntentIntegrator.parseActivityResult(resultCode, data);
             if (scanResult != null) {
                 if (scanResult.getContents() != null) {
-                    // Add the scanned barcode to the array list (optional)
-                    // gScannedResultsHoBag.add(scanResult.getContents());
                     String scannedData = scanResult.getContents();
                     Log.d("Scanned Result", scanResult.getContents());
-
-                    // Firebase Realtime Database reference
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("bagsToHo");
-
-                    // Look up data based on the scanned barcode (assuming it's a bag index)
                     databaseReference.child(scanResult.getContents()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                // Matched data found for the scanned barcode (bag index)
                                 String hoId = dataSnapshot.child("HoId").getValue(String.class);
-
-                                // Query bagsToHo for all data with the same HoId
                                 Query query = databaseReference.orderByChild("HoId").equalTo(hoId);
                                 query.addListenerForSingleValueEvent(new ValueEventListener() {
-
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
-                                            // Loop through all child nodes under "bagsToHo" with the matching HoId
                                             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                                                // Extract bag index (assuming childSnapshot.getKey() is the bag index)
                                                 String bagIndex = childSnapshot.getKey();
                                                 totalItems++;
-                                                // Check if "remarks" node exists and retrieve its value
-
-                                                // Construct the path to the "remarks" node within "HoBags" using HoId
                                                 String remarksPath = "HoBags/" + hoId + "/remarks";
-
-                                                // Reference the specific "remarks" node
                                                 DatabaseReference remarksReference = FirebaseDatabase.getInstance().getReference(remarksPath);
-
-                                                // Listen for a single value event to retrieve the remarks
                                                 remarksReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(DataSnapshot remarksSnapshot) {
                                                         if (remarksSnapshot.exists()) {
                                                             remarks = remarksSnapshot.getValue(String.class);
                                                         }
-
-                                                        // Update editTextRemarksRcv with the retrieved remarks
                                                         editTextRemarksRcv.setText(remarks);
                                                     }
-
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
-
                                                     }
                                                 });
-
-                                                // Add bag index or other relevant data to ArrayList
                                                 gScannedResultsHoBag.add(bagIndex);
                                             }
                                             elmIncBag.setText(String.valueOf(totalItems));
                                         } else {
-                                            // No data found with the matching HoId
-                                            // Handle this scenario as needed (e.g., display a message to the user)
                                         }
                                     }
-
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
                                     }
                                 });
                             } else {
-                                // No data found for the scanned barcode (bag index)
-                                // Handle this scenario as needed (e.g., display a message to the user)
                             }
                         }
-                        // Update editTextHoBag with scanned data and clear after 2 seconds
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
-                    // Update editTextSearchBag with scanned data and clear after 2 seconds
                     runOnUiThread(new Runnable() {
-
-
                         @Override
                         public void run() {
                             editTextSearchBag.setText(scannedData);
@@ -377,10 +290,8 @@ public class ReceivingBagActivity extends AppCompatActivity {
                             }, 2000); // Delay for 2 seconds
                         }
                     });
-                    // Toast message can be modified to indicate successful scan and data lookup
                     Toast.makeText(this, "Scanned and data retrieved successfully", LENGTH_SHORT).show();
                 } else {
-                    // Handle scan cancellation
                     Toast.makeText(this, "Scan canceled", LENGTH_SHORT).show();
                 }
             }
@@ -389,13 +300,10 @@ public class ReceivingBagActivity extends AppCompatActivity {
             if (scanResult != null) {
                 if (scanResult.getContents() != null) {
                     String scannedDataRcv = scanResult.getContents();
-
-                    // Add scanned data to detail scan results list
                     scannedResultsRcvBag.add(scannedDataRcv);
                     Log.d("Scanned Result (Detail)", scannedDataRcv);
                     int detailScanCount = scannedResultsRcvBag.size();
                     elmIncRcvBag.setText(String.valueOf(detailScanCount));
-                    // Check if the scanned data exists in the main scan results (gScannedResultsHoBag)
                     int indexToRemove = -1;
                     for (int i = 0; i < gScannedResultsHoBag.size(); i++) {
                         if (gScannedResultsHoBag.get(i).equals(scannedDataRcv)) {
@@ -403,17 +311,13 @@ public class ReceivingBagActivity extends AppCompatActivity {
                             break;
                         }
                     }
-
-                    // Remove the matching data from the main scan results if found
                     if (indexToRemove != -1) {
                         gScannedResultsHoBag.remove(indexToRemove);
-                        totalItems--; // Update total scan count (optional)
-                        elmIncBag.setText(String.valueOf(totalItems)); // Update UI (optional)
+                        totalItems--;
+                        elmIncBag.setText(String.valueOf(totalItems));
                         Log.d("Scanned Result (Detail)", "Matching data removed from main scan results");
                     }
                     runOnUiThread(new Runnable() {
-
-
                         @Override
                         public void run() {
                             editTextScanRcvBag.setText(scannedDataRcv);
@@ -425,13 +329,9 @@ public class ReceivingBagActivity extends AppCompatActivity {
                             }, 2000); // Delay for 2 seconds
                         }
                     });
-                    // You can add further processing here if needed for detail scan results
-                    // ... (your additional logic for handling detail scan data)
                 } else {
-                    // Handle scan cancellation
                     Toast.makeText(this, "Scan canceled", LENGTH_SHORT).show();
                 }
-
             }
         }
     }

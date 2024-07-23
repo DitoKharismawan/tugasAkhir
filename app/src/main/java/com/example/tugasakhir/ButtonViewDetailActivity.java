@@ -27,34 +27,24 @@ public class ButtonViewDetailActivity extends AppCompatActivity {
         listViewScannedResultsBag = findViewById(R.id.listViewScannedResultsBag);
         taCtx = (TugasAkhirContext)getApplicationContext();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         buildBagList();
     }
-
     private void buildBagList() {
         bagsAdaptedList = new ArrayList<>();
-
         HashMap<String, ArrayList<String>> bagsHolder = taCtx.getBagDataStore().getBagsHolder();
         for (String bagName : bagsHolder.keySet()) {
             ArrayList<String> connoteList = bagsHolder.get(bagName);
             bagsAdaptedList.add(new BagsAdaptedArrayList(bagName, connoteList.size()));
         }
-
         boolean isScannedSomeConnote = !bagsHolder.isEmpty();
-//        Toast.makeText(this, "[SCN DETAIL] " + taCtx.getBagDataStore().getTotalConnoteCount(), Toast.LENGTH_SHORT).show();
 
-        // Memastikan hasil scan tidak null dan tidak kosong
         if (isScannedSomeConnote) {
-            // Menggunakan ArrayAdapter untuk menampilkan data dalam ListView
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scannedResults);
             CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), bagsAdaptedList, ref);
             listAdapter = adapter;
             listViewScannedResultsBag.setAdapter(adapter);
-
-            // Menambahkan onClickListener pada item ListView
             listViewScannedResultsBag.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
@@ -64,17 +54,11 @@ public class ButtonViewDetailActivity extends AppCompatActivity {
                     }else{
                         listViewScannedResultsBag.setItemChecked(pos,true);
                     }
-                    //lvMain.setSelection();
-
                     return true;
                 }
             });
 
             listViewScannedResultsBag.setOnItemClickListener((parent, view, position, id) -> {
-//                String selectedItem = scannedResults.get(position);
-//                String selectedItem = scannedResults.get(position);
-                // Pindah ke DetailConnoteActivity dengan membawa data terpilih (contoh: nomor AWB)
-//                navigateToDetailConnoteActivity(selectedItem);
                 BagsAdaptedArrayList selectedBag = bagsAdaptedList.get(position);
                 ArrayList<String> connoteContents = bagsHolder.get(selectedBag.getBagId());
                 navigateToDetailConnoteActivity(selectedBag.getBagId(), connoteContents);
@@ -83,18 +67,12 @@ public class ButtonViewDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "No scanned data available.", Toast.LENGTH_SHORT).show();
         }
     }
-
     public void deleteBagHook(String bagId, Integer arrayIndex) {
         Toast.makeText(getApplicationContext(), "[Direct] : " + bagId + " [By Idx] : " + bagsAdaptedList.get(arrayIndex).getBagId(), Toast.LENGTH_SHORT).show();
         taCtx.getBagDataStore().getBagsHolder().remove(bagsAdaptedList.get(arrayIndex).getBagId());
         listAdapter.remove(bagsAdaptedList.get(arrayIndex));
     }
-
-//    private void navigateToDetailConnoteActivity(String selectedItem) {
     private void navigateToDetailConnoteActivity(String nomorBag, ArrayList<String> connoteContents) {
-        // Di sini Anda dapat membuat Intent dan memulai DetailConnoteActivity,
-        // serta mengirim data terpilih menggunakan Intent (misalnya, nomor AWB).
-
         Intent intent = new Intent(ButtonViewDetailActivity.this, DetailConnoteActivity.class);
         intent.putExtra("selectedItem", nomorBag);
         intent.putStringArrayListExtra("connoteContents", connoteContents);
